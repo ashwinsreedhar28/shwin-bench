@@ -1,6 +1,20 @@
 """Shared helpers: load tasks, image names, test commands, grading."""
-import json, re, subprocess, tempfile, time
+import json, os, re, shutil, subprocess, tempfile, time
 from pathlib import Path
+
+
+def find_docker():
+    """Docker Desktop on macOS is often not on PATH inside make/venv/anaconda shells."""
+    for c in [os.environ.get("DOCKER"), shutil.which("docker"), "/usr/local/bin/docker", "/opt/homebrew/bin/docker",
+              os.path.expanduser("~/.docker/bin/docker"), "/Applications/Docker.app/Contents/Resources/bin/docker"]:
+        if c and os.path.exists(c):
+            return c
+    raise SystemExit("docker binary not found; set DOCKER=/path/to/docker or add it to PATH")
+
+
+DOCKER = find_docker()
+# mini-swe-agent calls `docker` by name: make sure the directory holding it is on PATH for subprocesses
+os.environ["PATH"] = os.path.dirname(DOCKER) + os.pathsep + os.environ.get("PATH", "")
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS = ROOT / "dataset" / "tasks.jsonl"
@@ -38,20 +52,20 @@ def parse_pytest(out):
 def docker_run(image, script, workdir, timeout=1800, network="none", files=None, cpus="2", memory="4g"):
     """Run a bash script in a fresh container. `files` = {container_path: text} copied in before the script."""
     name = f"shwin-{int(time.time()*1000)%10**9}"
-    cmd = ["docker", "create", "--name", name, "--network", network, f"--cpus={cpus}", f"--memory={memory}", "-w", workdir, image, "bash", "-lc", script]
+    cmd = [DOCKER, "create", "--name", name, "--network", network, f"--cpus={cpus}", f"--memory={memory}", "-w", workdir, image, "bash", "-lc", script]
     subprocess.run(cmd, check=True, capture_output=True)
     try:
         for path, text in (files or {}).items():
             with tempfile.NamedTemporaryFile("w", delete=False, suffix=".patch") as f:
                 f.write(text); f.flush()
-            subprocess.run(["docker", "cp", f.name, f"{name}:{path}"], check=True, capture_output=True)
-        r = subprocess.run(["docker", "start", "-a", name], capture_output=True, text=True, timeout=timeout)
+            subprocess.run([DOCKER, "cp", f.name, f"{name}:{path}"], check=True, capture_output=True)
+        r = subprocess.run([DOCKER, "start", "-a", name], capture_output=True, text=True, timeout=timeout)
         return r.returncode, r.stdout + r.stderr
     except subprocess.TimeoutExpired:
-        subprocess.run(["docker", "kill", name], capture_output=True)
+        subprocess.run([DOCKER, "kill", name], capture_output=True)
         return 124, "TIMEOUT"
     finally:
-        subprocess.run(["docker", "rm", "-f", name], capture_output=True)
+        subprocess.run([DOCKER, "rm", "-f", name], capture_output=True)
 
 
 def grade(task, model_patch, timeout=1800):

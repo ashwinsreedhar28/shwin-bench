@@ -2,6 +2,7 @@
 PY ?= python3
 MODEL ?= anthropic/claude-haiku-4-5
 PLATFORM ?=            # set PLATFORM=--platform linux/arm64 on Apple silicon if builds pick the wrong arch
+export PATH := /usr/local/bin:/opt/homebrew/bin:$(HOME)/.docker/bin:$(PATH)   # Docker Desktop on macOS
 
 setup:            ## venv with mini-swe-agent
 	$(PY) -m venv .venv && . .venv/bin/activate && pip install -q mini-swe-agent pyyaml

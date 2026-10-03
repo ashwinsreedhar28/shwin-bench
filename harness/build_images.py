@@ -8,7 +8,7 @@
 import argparse, subprocess, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from common import load_tasks, image_name, ROOT
+from common import load_tasks, image_name, ROOT, DOCKER
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--split"); ap.add_argument("--repo"); ap.add_argument("--ids", nargs="*")
@@ -21,7 +21,7 @@ for t in tasks:
     if img in seen: continue
     seen.add(img)
     df = ROOT / "harness" / "docker" / f"Dockerfile.{t['repo_name']}"
-    cmd = ["docker", "build", "-f", str(df), "--build-arg", f"BASE_COMMIT={t['base_commit']}", "-t", img, str(df.parent)]
+    cmd = [DOCKER, "build", "-f", str(df), "--build-arg", f"BASE_COMMIT={t['base_commit']}", "-t", img, str(df.parent)]
     if a.platform: cmd[2:2] = ["--platform", a.platform]
     print("building", img, flush=True)
     r = subprocess.run(cmd, capture_output=True, text=True)
