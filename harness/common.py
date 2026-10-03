@@ -68,15 +68,26 @@ def docker_run(image, script, workdir, timeout=1800, network="none", files=None,
         subprocess.run([DOCKER, "rm", "-f", name], capture_output=True)
 
 
-def grade(task, model_patch, timeout=1800):
-    """Apply the agent's patch and the hidden test patch in a fresh container, run the suite, judge."""
-    repo = task["repo_name"]
+def touched_test_files(task):
+    """Test files the hidden test patch touches; run each in its own pytest process (one of them can segfault
+    the interpreter via the Triton CPU interpreter, which would otherwise take the rest of the suite with it)."""
+    return sorted({m.group(1) for m in re.finditer(r"^\+\+\+ b/(\S+)", task["test_patch"], re.M)})
+
+
+def grade(task, model_patch, timeout=2400):
+    """Apply the agent's patch and the hidden test patch in a fresh container, run the suite, judge.
+    Same isolation as validation: untouched test files in one pytest process, each touched file alone."""
+    repo = task["repo_name"]; wd = WORKDIR[repo]
+    sub = (wd[len("/testbed/"):] + "/") if wd != "/testbed" else ""
+    touched = [t[len(sub):] for t in touched_test_files(task) if t.startswith(sub)]
+    runs = [f"{TEST_CMD[repo]} tests " + " ".join(f"--ignore={t}" for t in touched) + " || true"]
+    runs += [f"{TEST_CMD[repo]} {t} || true" for t in touched]
     script = (
         "set -e; cd /testbed; git apply --whitespace=nowarn /tmp/model.patch || { echo SHWIN_PATCH_FAILED; exit 3; }; "
         "git apply --whitespace=nowarn /tmp/test.patch || { echo SHWIN_TEST_PATCH_FAILED; exit 4; }; "
-        f"cd {WORKDIR[repo]}; {TEST_CMD[repo]} || true"
+        f"cd {wd}; " + "; ".join(runs)
     )
-    rc, out = docker_run(task and image_name(task), script, WORKDIR[repo], timeout=timeout,
+    rc, out = docker_run(image_name(task), script, wd, timeout=timeout,
                          files={"/tmp/model.patch": model_patch or "", "/tmp/test.patch": task["test_patch"]})
     passed, failed = parse_pytest(out)
     f2p = task["FAIL_TO_PASS"]; p2p = task["PASS_TO_PASS"]
