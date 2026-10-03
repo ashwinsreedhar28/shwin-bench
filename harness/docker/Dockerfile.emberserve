@@ -10,4 +10,4 @@ ARG BASE_COMMIT
 RUN git clone https://github.com/ashwinsreedhar28/emberserve /testbed && cd /testbed && git checkout -q ${BASE_COMMIT} \
  && pip install --no-cache-dir --no-deps -e . && git config user.email agent@shwin && git config user.name agent
 WORKDIR /testbed
-ENV PYTEST_ADDOPTS='-m "not gpu and not hf"' PYTHONDONTWRITEBYTECODE=1 HF_HUB_OFFLINE=1 TOKENIZERS_PARALLELISM=false
+ENV PYTEST_ADDOPTS='-m "not gpu and not hf"' PYTHONDONTWRITEBYTECODE=1 TOKENIZERS_PARALLELISM=false

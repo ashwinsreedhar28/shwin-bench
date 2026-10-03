@@ -60,6 +60,7 @@ def run_one(task, a, run_dir):
                category=task["meta"]["category"], difficulty=task["meta"]["difficulty"], interface_leak=task["meta"]["interface_leak"],
                exit_status=info.get("exit_status"), salvaged=salvaged, steps=getattr(agent, "n_calls", None), cost_usd=round(cost, 4),
                agent_seconds=round(time.time() - t0), **{k: v for k, v in g.items() if k != "log_tail"})
+    (tdir / "grade_log.txt").write_text(g.pop("log", ""))
     (tdir / "grade.json").write_text(json.dumps(g, indent=1))
     with (run_dir / "results.jsonl").open("a") as f: f.write(json.dumps(rec) + "\n")
     print(f"{rec['instance_id']:40s} {g['status']:12s}{' (salvaged)' if salvaged else ''} f2p={g['f2p_passed']} p2p_broken={g['p2p_broken_count']} steps={rec['steps']} ${cost:.3f} total=${SPENT:.2f}", flush=True)

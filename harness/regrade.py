@@ -13,6 +13,7 @@ out = []
 for r in rows:
     t = tasks[r["instance_id"]]; patch = (run_dir / r["instance_id"] / "patch.diff").read_text()
     g = grade(t, patch) if patch.strip() else dict(status="NO_PATCH", resolved=False, f2p_passed="0/%d" % len(t["FAIL_TO_PASS"]), p2p_broken=[], p2p_broken_count=0, tests_seen=0, log_tail="")
+    (run_dir / r["instance_id"] / "grade_log.txt").write_text(g.pop("log", ""))
     (run_dir / r["instance_id"] / "grade.json").write_text(json.dumps(g, indent=1))
     r.update({k: v for k, v in g.items() if k != "log_tail"}); out.append(r)
     print(f"{r['instance_id']:40s} {g['status']:12s} f2p={g['f2p_passed']} p2p_broken={g['p2p_broken_count']} tests_seen={g['tests_seen']}", flush=True)

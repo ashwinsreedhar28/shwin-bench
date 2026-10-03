@@ -96,4 +96,5 @@ def grade(task, model_patch, timeout=2400):
     status = ("PATCH_FAILED" if "SHWIN_PATCH_FAILED" in out else "TEST_PATCH_FAILED" if "SHWIN_TEST_PATCH_FAILED" in out
               else "TIMEOUT" if rc == 124 else "RESOLVED" if len(f2p_ok) == len(f2p) and not p2p_broken else "UNRESOLVED")
     return dict(status=status, resolved=status == "RESOLVED", f2p_passed=f"{len(f2p_ok)}/{len(f2p)}",
-                p2p_broken=p2p_broken[:20], p2p_broken_count=len(p2p_broken), tests_seen=len(passed) + len(failed), log_tail=out[-3000:])
+                p2p_broken=p2p_broken[:20], p2p_broken_count=len(p2p_broken), tests_seen=len(passed) + len(failed),
+                failed_seen=sorted(failed)[:40], log_tail=out[-3000:], log=out)
