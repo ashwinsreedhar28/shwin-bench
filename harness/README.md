@@ -10,7 +10,7 @@ tests. Nothing here has run yet against a model; the pilot is the first run.
 | `docker/Dockerfile.<repo>` | shared dependency layer per repo (torch CPU, pytest, ...), then `git checkout <base_commit>` as a thin layer. The gold and test patches are never in the image. |
 | `build_images.py` | one `docker build` per distinct base commit, tagged `shwin/<repo>:<commit12>` |
 | `verify_images.py` | repeats the dataset validation inside the images: FAIL_TO_PASS fails 3/3 at base, passes 3/3 with gold, PASS_TO_PASS intact. Run before any model run. |
-| `shwin.yaml` | agent config, derived from mini-swe-agent's stock `swebench.yaml` (same prompt, same submit protocol, 30-step cap, "no network" sentence added) |
+| `shwin.yaml` | agent config, derived from mini-swe-agent's stock `swebench.yaml` (same prompt, same submit protocol, 75-step cap, "no network" sentence added) |
 | `run.py` | runs the agent on tasks, writes trajectory + patch, grades in a fresh container, appends `results.jsonl`, stops launching tasks once total spend passes `--cost-cap` |
 | `common.py` | task loading, image naming, `docker run` helper, pytest parsing, the grade rule |
 
@@ -27,6 +27,8 @@ make verify                # optional but recommended: 3/3 checks inside the ima
 export ANTHROPIC_API_KEY=sk-ant-...
 make pilot                 # 10 tasks, Haiku 4.5, precise statements, 2 at a time, hard stop at $5
 ```
+
+If the agent runs out of steps before submitting, `run.py` salvages its `git diff` (tests and scratch files excluded) and grades that, marking the row `salvaged: true`. The first pilot showed Haiku mid-verification at a 30-step cap on every task, hence 75.
 
 Pilot set: 10 leak-free main tasks (4 easy, 6 medium) across logic, resource-accounting, config/cli,
 numerics/kernel, data-handling, error-handling. Output in `runs/<timestamp>_<model>_precise_main,seed-data/`:

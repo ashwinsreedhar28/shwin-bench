@@ -189,8 +189,8 @@ agent:
     </instructions>
 
     '
-  step_limit: 30
-  cost_limit: 1.0
+  step_limit: 75
+  cost_limit: 1.5
 environment:
   environment_class: docker
   cwd: /testbed
