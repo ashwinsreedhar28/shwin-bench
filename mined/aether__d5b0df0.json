@@ -1,0 +1,88 @@
+{
+ "repo": "aether",
+ "commit": "d5b0df0c1e6ced6cc27e05492b1d2eff51ae346f",
+ "base_commit": "2f44ee6f1bd1215e204d702cf0e37c6d668f980d",
+ "subject": "fix(sdk): deny payload spread order \u2014 deny name always wins the reason key (#385)",
+ "date": "2026-07-14",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "core/node_sdk/__init__.py",
+   "lines": 13
+  },
+  {
+   "i": 1,
+   "path": "core/node_sdk/__init__.py",
+   "lines": 2
+  },
+  {
+   "i": 2,
+   "path": "core/node_sdk_ts/src/MeshNode.ts",
+   "lines": 1
+  },
+  {
+   "i": 3,
+   "path": "core/node_sdk_ts/src/MeshNode.ts",
+   "lines": 2
+  },
+  {
+   "i": 4,
+   "path": "core/node_sdk_ts/src/index.ts",
+   "lines": 1
+  },
+  {
+   "i": 5,
+   "path": "core/node_sdk_ts/src/types.ts",
+   "lines": 11
+  },
+  {
+   "i": 6,
+   "path": "nodes/finance/src/client.ts",
+   "lines": 2
+  },
+  {
+   "i": 7,
+   "path": "nodes/finance/src/client.ts",
+   "lines": 2
+  },
+  {
+   "i": 8,
+   "path": "nodes/finance/src/client.ts",
+   "lines": 2
+  },
+  {
+   "i": 9,
+   "path": "nodes/finance/src/index.ts",
+   "lines": 2
+  },
+  {
+   "i": 10,
+   "path": "nodes/finance/src/index.ts",
+   "lines": 2
+  },
+  {
+   "i": 11,
+   "path": "nodes/finance/src/index.ts",
+   "lines": 2
+  },
+  {
+   "i": 12,
+   "path": "nodes/finance/src/index.ts",
+   "lines": 2
+  },
+  {
+   "i": 13,
+   "path": "nodes/github/src/handlers.ts",
+   "lines": 9
+  },
+  {
+   "i": 14,
+   "path": "nodes/research/src/index.ts",
+   "lines": 5
+  }
+ ],
+ "new_tests": [],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": []
+}

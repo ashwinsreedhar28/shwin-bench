@@ -1,0 +1,18 @@
+{
+ "repo": "emberserve",
+ "commit": "1d8256df9943e431f893e680623e2a6a40b9854b",
+ "base_commit": "74630cf5e0936947010fa9e3c345f5737b18df64",
+ "subject": "Fix GPU test pollution: TRITON_INTERPRET leaked from the CPU test module into the GPU tests (interpreter ran the kernel on CPU; broke CUDA-graph capture); backend now refuses interpreter mode on a CUDA cache",
+ "date": "2026-09-27",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "pagedserve/attn/paged_triton.py",
+   "lines": 5
+  }
+ ],
+ "new_tests": [],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": []
+}

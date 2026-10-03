@@ -1,0 +1,413 @@
+{
+ "repo": "serverless-lakehouse",
+ "commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+ "base_commit": "63fc534315f7c0835d1b04508595972239eed0ae",
+ "subject": "Audit fixes: manifest-driven silver, ledger repair, endpoint ids, Space on Docker/hf, cost proxy, seed evidence",
+ "date": "2026-10-02",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": ".github/workflows/ci.yml",
+   "lines": 23
+  },
+  {
+   "i": 1,
+   "path": ".github/workflows/sync-space.yml",
+   "lines": 3
+  },
+  {
+   "i": 2,
+   "path": ".github/workflows/sync-space.yml",
+   "lines": 4
+  },
+  {
+   "i": 3,
+   "path": "Makefile",
+   "lines": 5
+  },
+  {
+   "i": 4,
+   "path": "Makefile",
+   "lines": 2
+  },
+  {
+   "i": 5,
+   "path": "Makefile",
+   "lines": 6
+  },
+  {
+   "i": 6,
+   "path": "Makefile",
+   "lines": 3
+  },
+  {
+   "i": 7,
+   "path": "lakehouse/bronze.py",
+   "lines": 5
+  },
+  {
+   "i": 8,
+   "path": "lakehouse/bronze.py",
+   "lines": 16
+  },
+  {
+   "i": 9,
+   "path": "lakehouse/bronze.py",
+   "lines": 15
+  },
+  {
+   "i": 10,
+   "path": "lakehouse/bronze.py",
+   "lines": 28
+  },
+  {
+   "i": 11,
+   "path": "lakehouse/bronze.py",
+   "lines": 6
+  },
+  {
+   "i": 12,
+   "path": "lakehouse/bronze.py",
+   "lines": 6
+  },
+  {
+   "i": 13,
+   "path": "lakehouse/bronze.py",
+   "lines": 3
+  },
+  {
+   "i": 14,
+   "path": "lakehouse/gold.py",
+   "lines": 2
+  },
+  {
+   "i": 15,
+   "path": "lakehouse/gold.py",
+   "lines": 3
+  },
+  {
+   "i": 16,
+   "path": "lakehouse/gold.py",
+   "lines": 8
+  },
+  {
+   "i": 17,
+   "path": "lakehouse/gold.py",
+   "lines": 6
+  },
+  {
+   "i": 18,
+   "path": "lakehouse/redact.py",
+   "lines": 4
+  },
+  {
+   "i": 19,
+   "path": "lakehouse/redact.py",
+   "lines": 17
+  },
+  {
+   "i": 20,
+   "path": "lakehouse/report.py",
+   "lines": 7
+  },
+  {
+   "i": 21,
+   "path": "lakehouse/report.py",
+   "lines": 7
+  },
+  {
+   "i": 22,
+   "path": "lakehouse/report.py",
+   "lines": 5
+  },
+  {
+   "i": 23,
+   "path": "lakehouse/silver.py",
+   "lines": 6
+  },
+  {
+   "i": 24,
+   "path": "lakehouse/silver.py",
+   "lines": 43
+  },
+  {
+   "i": 25,
+   "path": "lakehouse/silver.py",
+   "lines": 5
+  },
+  {
+   "i": 26,
+   "path": "lakehouse/silver.py",
+   "lines": 6
+  },
+  {
+   "i": 27,
+   "path": "lakehouse/silver.py",
+   "lines": 4
+  },
+  {
+   "i": 28,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 29,
+   "path": "lakehouse/silver.py",
+   "lines": 14
+  },
+  {
+   "i": 30,
+   "path": "lakehouse/silver.py",
+   "lines": 11
+  },
+  {
+   "i": 31,
+   "path": "lakehouse/silver.py",
+   "lines": 4
+  },
+  {
+   "i": 32,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 33,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 34,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 35,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 36,
+   "path": "lakehouse/silver.py",
+   "lines": 4
+  },
+  {
+   "i": 37,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 38,
+   "path": "lakehouse/silver.py",
+   "lines": 3
+  },
+  {
+   "i": 39,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 40,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 4
+  },
+  {
+   "i": 41,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 4
+  },
+  {
+   "i": 42,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 43,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 44,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 45,
+   "path": "pytest.ini",
+   "lines": 3
+  },
+  {
+   "i": 46,
+   "path": "seeds/coldstart_run_notes.csv",
+   "lines": 16
+  },
+  {
+   "i": 47,
+   "path": "seeds/coldstart_series.csv",
+   "lines": 6
+  },
+  {
+   "i": 48,
+   "path": "seeds/gpu_labels.csv",
+   "lines": 30
+  },
+  {
+   "i": 49,
+   "path": "space/Dockerfile",
+   "lines": 11
+  },
+  {
+   "i": 50,
+   "path": "space/app.py",
+   "lines": 8
+  },
+  {
+   "i": 51,
+   "path": "space/app.py",
+   "lines": 5
+  },
+  {
+   "i": 52,
+   "path": "space/app.py",
+   "lines": 5
+  },
+  {
+   "i": 53,
+   "path": "space/app.py",
+   "lines": 7
+  }
+ ],
+ "new_tests": [
+  "tests/test_redact.py::test_compound_key_names_and_base64_values",
+  "tests/test_redact.py::test_more_token_shapes",
+  "tests/test_seeds.py::test_coldstart_series",
+  "tests/test_seeds.py::test_evidence_file_present",
+  "tests/test_seeds.py::test_gpu_labels",
+  "tests/test_seeds.py::test_run_notes"
+ ],
+ "dropped_not_failing": [
+  "tests/test_seeds.py::test_coldstart_series"
+ ],
+ "dropped_not_passing": [
+  "tests/test_seeds.py::test_evidence_file_present"
+ ],
+ "tasks": [
+  {
+   "task_id": "serverless-lakehouse__896803f-0",
+   "repo": "serverless-lakehouse",
+   "commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+   "base_commit": "63fc534315f7c0835d1b04508595972239eed0ae",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Audit fixes: manifest-driven silver, ledger repair, endpoint ids, Space on Docker/hf, cost proxy, seed evidence",
+   "bundled": true,
+   "gold_hunks": [
+    19
+   ],
+   "gold_files": [
+    "lakehouse/redact.py"
+   ],
+   "gold_patch": "diff --git a/lakehouse/redact.py b/lakehouse/redact.py\nindex 7da7610..644b67a 100644\n--- a/lakehouse/redact.py\n+++ b/lakehouse/redact.py\n@@ -18,12 +20,19 @@ PATTERNS: list[tuple[str, Pattern[str], str]] = [\n     # covers OpenAI sk-..., OpenRouter sk-or-v1-..., Anthropic sk-ant-...\n     (\"sk_key\",        re.compile(r\"sk-[A-Za-z0-9_\\-]{20,}\"),                    \"<redacted:sk_key>\"),\n     (\"github_token\",  re.compile(r\"gh[pousr]_[A-Za-z0-9]{30,}\"),                \"<redacted:github_token>\"),\n-    (\"aws_access_key\", re.compile(r\"AKIA[0-9A-Z]{16}\"),                         \"<redacted:aws_access_key>\"),\n-    (\"bearer\",        re.compile(r\"(?i)\\bbearer\\s+[A-Za-z0-9._\\-]{20,}\"),       \"Bearer <redacted:bearer>\"),\n-    # key=value and \"key\": \"value\" forms where the key says it is a secret. Keeps the key, quotes and\n-    # separator, drops the value. The value class excludes '<' so already-redacted values don't re-match.\n+    (\"github_pat\",    re.compile(r\"github_pat_[A-Za-z0-9_]{20,}\"),              \"<redacted:github_pat>\"),   # fine-grained PATs\n+    (\"aws_access_key\", re.compile(r\"(?:AKIA|ASIA)[0-9A-Z]{16}\"),                \"<redacted:aws_access_key>\"),\n+    (\"slack_token\",   re.compile(r\"xox[abprs]-[A-Za-z0-9-]{10,}\"),             \"<redacted:slack_token>\"),\n+    (\"private_key\",   re.compile(r\"-----BEGIN [A-Z ]*PRIVATE KEY-----\"),        \"<redacted:private_key>\"),\n+    (\"jwt\",           re.compile(r\"eyJ[A-Za-z0-9_-]{10,}\\.eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\"), \"<redacted:jwt>\"),\n+    (\"bearer\",        re.compile(r\"(?i)\\bbearer\\s+[A-Za-z0-9._+/=\\-]{20,}\"),    \"Bearer <redacted:bearer>\"),\n+    # key=value and \"key\": \"value\" forms where the key name contains a secret-ish word \u2014 including compound names\n+    # such as AWS_SECRET_ACCESS_KEY or OPENROUTER_API_KEY. Keeps the key, quotes and separator, drops the value.\n+    # The value class allows base64 (+ / =) and excludes '<' so already-redacted values don't re-match; a purely\n+    # numeric value is not a secret (\"first_token_s\": 2073169.405621416 is a timestamp).\n     (\"kv_secret\",\n-     re.compile(r\"(?i)\\b(api[_-]?key|secret|token|password|passwd|authorization)\\b(['\\\"]?\\s*[:=]\\s*['\\\"]?)([A-Za-z0-9._\\-]{16,})\"),\n+     re.compile(r\"(?i)([A-Za-z0-9_\\-]*(?:api[_-]?key|secret|token(?!izer)|password|passwd|authorization|credential)[A-Za-z0-9_\\-]*)\"\n+                r\"(['\\\"]?\\s*[:=]\\s*['\\\"]?)(?![0-9.]{16,}(?![A-Za-z0-9+/=_\\-]))([A-Za-z0-9+/=._\\-]{16,})\"),\n      r\"\\1\\2<redacted:kv_secret>\"),\n ]\n \n",
+   "gold_lines": 17,
+   "FAIL_TO_PASS": [
+    "tests/test_redact.py::test_compound_key_names_and_base64_values",
+    "tests/test_redact.py::test_more_token_shapes"
+   ],
+   "test_patch": "diff --git a/tests/test_redact.py b/tests/test_redact.py\nindex 0d42580..0e79b15 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -28,6 +28,9 @@ def test_already_redacted_and_benign_text_untouched():\n         \"revision/b968826d9c46dd6066d109eabc6255188de91218\",       # HF commit hash in a URL\n         \"fixture_sha,7e6005269552\", \"worker_id=80fcxq58vdfrqt\",      # ids that are not credentials\n         \"export RUNPOD_API_KEY=...   ENDPOINT_ID=kbme98hqtjthdl\",    # runbook placeholder\n+        '\"tokenizer\": \"models/Qwen2.5-0.5B-Instruct\"',               # \"token\" inside \"tokenizer\" is not a secret\n+        '\"max_tokens\": 16, \"prompt_tokens\": 53404',\n+        '\"first_token_s\": 2073169.405621416, \"arrival_s\": 2073168.797192291',   # numeric values are never secrets\n     ]\n     for s in benign:\n         out, hits = redact(s)\n@@ -35,6 +38,21 @@ def test_already_redacted_and_benign_text_untouched():\n         assert find(s) == []\n \n \n+def test_compound_key_names_and_base64_values():\n+    v = \"+\" + \"ab/CD\" * 5 + \"==\"                              # base64-ish, starts with '+'\n+    for line in (f\"AWS_SECRET_ACCESS_KEY={v}\", f\"OPENROUTER_API_KEY: '{v}'\", f'\"my_token_value\": \"{v}\"'):\n+        out, hits = redact(line)\n+        assert v not in out and hits[\"kv_secret\"] == 1, line\n+\n+\n+def test_more_token_shapes():\n+    pat = \"github_pat_\" + \"x\" * 22 + \"_\" + \"Y\" * 40\n+    jwt = \"eyJ\" + \"a\" * 20 + \".eyJ\" + \"b\" * 20 + \".\" + \"c\" * 20\n+    for tok, name in ((pat, \"github_pat\"), (jwt, \"jwt\"), (\"ASIA\" + \"Q\" * 16, \"aws_access_key\"), (\"xoxb-\" + \"1\" * 12 + \"-abc\", \"slack_token\")):\n+        out, hits = redact(f\"value {tok} end\")\n+        assert tok not in out and hits[name] == 1, name\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_seeds.py b/tests/test_seeds.py\nnew file mode 100644\nindex 0000000..c96efba\n--- /dev/null\n+++ b/tests/test_seeds.py\n@@ -0,0 +1,53 @@\n+\"\"\"Seeds are hand-written CSVs; a stray comma shifts every column after it. Check shape and enumerations.\"\"\"\n+\n+import csv\n+from pathlib import Path\n+\n+ROOT = Path(__file__).resolve().parent.parent / \"seeds\"\n+\n+\n+def rows(name):\n+    with (ROOT / name).open(newline=\"\", encoding=\"utf-8\") as f:\n+        r = csv.DictReader(f)\n+        out = list(r)\n+        assert all(None not in row and None not in row.values() for row in out), f\"{name}: ragged row (unquoted comma?)\"\n+        return r.fieldnames, out\n+\n+\n+def test_coldstart_series():\n+    cols, data = rows(\"coldstart_series.csv\")\n+    assert cols == [\"series_label\", \"engine\", \"engine_build\", \"model\", \"gpu_model\", \"flashboot\", \"flashboot_source\",\n+                    \"weights_mode\", \"image_gb\", \"notes\"]\n+    assert len(data) == 13 and len({r[\"series_label\"] for r in data}) == 13\n+    for r in data:\n+        assert r[\"engine\"] in (\"emberserve\", \"worker-vllm\"), r\n+        assert r[\"flashboot\"] in (\"on\", \"off\", \"unknown\"), r\n+        assert r[\"weights_mode\"] in (\"baked\", \"fetched\"), r\n+        assert r[\"flashboot_source\"], r\n+\n+\n+def test_gpu_labels():\n+    cols, data = rows(\"gpu_labels.csv\")\n+    assert cols == [\"gpu_label\", \"tier\", \"gpu_model\", \"price_per_hr_usd\", \"evidence\", \"source\", \"notes\"]\n+    assert len({r[\"gpu_label\"] for r in data}) == len(data)\n+    for r in data:\n+        assert r[\"evidence\"] in (\"observed\", \"inferred\", \"unknown\"), r\n+        assert r[\"source\"], r\n+        if r[\"price_per_hr_usd\"]:\n+            float(r[\"price_per_hr_usd\"])\n+        if r[\"evidence\"] == \"unknown\":\n+            assert r[\"gpu_model\"] == \"\", r      # unknown means unknown, not a guess\n+\n+\n+def test_run_notes():\n+    cols, data = rows(\"coldstart_run_notes.csv\")\n+    assert cols == [\"series_label\", \"run_index\", \"host_state\", \"evidence\", \"note\", \"source\"]\n+    for r in data:\n+        int(r[\"run_index\"])\n+        assert r[\"host_state\"] in (\"fresh_host\", \"warm_host\", \"partial_host\", \"flashboot_resume\"), r\n+        assert r[\"evidence\"] and r[\"source\"], r\n+    assert len({(r[\"series_label\"], r[\"run_index\"]) for r in data}) == len(data)\n+\n+\n+def test_evidence_file_present():\n+    assert (ROOT / \"evidence\" / \"gpu_per_cycle.txt\").is_file()\ndiff --git a/tests/test_snapshot_scenarios.py b/tests/test_snapshot_scenarios.py\nnew file mode 100644\nindex 0000000..61dc6e3\n--- /dev/null\n+++ b/tests/test_snapshot_scenarios.py\n@@ -0,0 +1,123 @@\n+\"\"\"End-to-end scenarios the first external audit reproduced: silver must follow the landing manifest, not\n+bronze's newest timestamp; the ingest ledger must self-repair. Runs the real CLIs against a throw-away landing\n+and lakehouse (parquet, so no Delta jars needed) \u2014 slow (~2 min), needs Java.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import csv\n+import json\n+import os\n+import shutil\n+import subprocess\n+import sys\n+from pathlib import Path\n+\n+import pytest\n+\n+ROOT = Path(__file__).resolve().parent.parent\n+pytestmark = [pytest.mark.slow, pytest.mark.skipif(shutil.which(\"java\") is None, reason=\"needs a JVM\")]\n+\n+\n+def coldstart(label: str, n_runs: int) -> str:\n+    runs = [{\"health_before\": {\"workers\": {\"idle\": 1}},\n+             \"cold\": {\"status\": 200, \"total_s\": 20.0 + i, \"ok\": True, \"job_status\": \"COMPLETED\", \"delay_ms\": 19000 + i, \"execution_ms\": 900, \"worker_id\": f\"w{i}\"},\n+             \"warm\": {\"status\": 200, \"total_s\": 0.5, \"ok\": True, \"job_status\": \"COMPLETED\", \"delay_ms\": 20, \"execution_ms\": 400, \"worker_id\": f\"w{i}\"}}\n+            for i in range(n_runs)]\n+    return json.dumps({\"kind\": \"serverless_coldstart\", \"mode\": \"queue\", \"endpoint\": \"ep1\", \"label\": label, \"image\": \"test\",\n+                       \"note\": \"\", \"max_tokens\": 16, \"idle_s\": 60.0, \"runs\": runs, \"summary\": {\"failures\": 0}})\n+\n+\n+def sweep(with_records: bool) -> str:\n+    run = {\"request_rate\": 1.0, \"wall_s\": 10.0, \"summary\": {\"num_requests\": 2, \"completed\": 2, \"failed\": 0}, \"trace\": {\"n\": 2}}\n+    if with_records:\n+        run[\"records\"] = [{\"request_id\": f\"req-{i}\", \"arrival_s\": 1.0 + i, \"first_token_s\": 1.5 + i, \"finish_s\": 2.0 + i,\n+                           \"prompt_tokens\": 10, \"output_tokens\": 5, \"success\": True, \"error\": None} for i in range(2)]\n+    return json.dumps({\"kind\": \"sweep\", \"system\": \"sys\", \"server\": \"vllm\", \"base_url\": \"https://api.runpod.ai/v2/ep1/openai/v1\",\n+                       \"model\": \"m\", \"args\": {\"api_key\": \"<redacted>\"}, \"runs\": [run]})\n+\n+\n+class Pipeline:\n+    def __init__(self, tmp: Path):\n+        self.src = tmp / \"src\"\n+        (self.src / \"emberserve\" / \"results\").mkdir(parents=True)\n+        (self.src / \"pulse\").mkdir()\n+        self.env = {**os.environ, \"LANDING_DIR\": str(tmp / \"landing\"), \"LAKEHOUSE_DIR\": str(tmp / \"lakehouse\"),\n+                    \"SPARK_LOCAL_IP\": \"127.0.0.1\"}\n+        self.results = self.src / \"emberserve\" / \"results\"\n+\n+    def run(self, *mod: str) -> str:\n+        out = subprocess.run([sys.executable, \"-m\", f\"lakehouse.{mod[0]}\", *mod[1:]], cwd=ROOT, env=self.env,\n+                             capture_output=True, text=True)\n+        assert out.returncode == 0, out.stdout[-2000:] + out.stderr[-3000:]\n+        return out.stdout\n+\n+    def land(self):\n+        return self.run(\"land\", \"--emberserve\", str(self.src / \"emberserve\"), \"--pulse\", str(self.src / \"pulse\"),\n+                        \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+\n+    def bronze(self, label: str):\n+        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+\n+    def silver(self):\n+        return self.run(\"silver\", \"--format\", \"parquet\")\n+\n+    def count(self, table: str, **where) -> int:\n+        \"\"\"Count rows in a parquet table without starting a JVM.\"\"\"\n+        import glob\n+        import pyarrow.parquet as pq\n+        files = glob.glob(str(Path(self.env[\"LAKEHOUSE_DIR\"]) / \"silver\" / table / \"*.parquet\")) or \\\n+                glob.glob(str(Path(self.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / table / \"*.parquet\"))\n+        n = 0\n+        for f in files:\n+            t = pq.read_table(f).to_pylist()\n+            n += sum(1 for r in t if all(r.get(k) == v for k, v in where.items()))\n+        return n\n+\n+\n+@pytest.fixture(scope=\"module\")\n+def pipe(tmp_path_factory):\n+    pytest.importorskip(\"pyarrow\")\n+    return Pipeline(tmp_path_factory.mktemp(\"lh\"))\n+\n+\n+def test_revert_rename_and_empty_records_follow_the_manifest(pipe: Pipeline):\n+    A, B = coldstart(\"series_a\", 2), coldstart(\"series_a\", 1)\n+    f = pipe.results / \"serverless_coldstart_a.json\"\n+    f.write_text(A); pipe.land(); pipe.bronze(\"r1\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4                 # 2 runs \u00d7 cold+warm\n+\n+    f.write_text(B); pipe.land(); pipe.bronze(\"r2\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 2                 # replacement selected\n+\n+    f.write_text(A); pipe.land()\n+    out = pipe.bronze(\"r3\")\n+    assert \"nothing new\" in out                                         # (path, sha) of A already in bronze\n+    pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4                 # reverted file selected again, not \"newest\"\n+\n+    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4\n+    assert pipe.count(\"silver_coldstart_requests\", source_file=\"emberserve/results/serverless_coldstart_a.json\") == 0\n+\n+    sw = pipe.results / \"runpod_serverless_s.json\"\n+    sw.write_text(sweep(True)); pipe.land(); pipe.bronze(\"r5\"); pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 2\n+    sw.write_text(sweep(False)); pipe.land(); pipe.bronze(\"r6\"); pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 0                     # no records in the current version \u2192 none in silver\n+    assert pipe.count(\"silver_sweep_summaries\") == 1\n+\n+\n+def test_interrupted_run_repairs_the_ingest_log(pipe: Pipeline):\n+    log_dir = Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_ingest_log\"\n+    shutil.rmtree(log_dir)                                              # data tables written, ledger lost\n+    out = pipe.bronze(\"r7\")\n+    assert \"repaired\" in out, out\n+    assert pipe.count(\"bronze_ingest_log\", reconciled=True) > 0\n+\n+\n+def test_silver_refuses_when_bronze_lacks_the_current_version(pipe: Pipeline):\n+    (pipe.results / \"serverless_coldstart_new.json\").write_text(coldstart(\"series_new\", 1)); pipe.land()\n+    r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=pipe.env,\n+                       capture_output=True, text=True)\n+    assert r.returncode != 0 and \"not in bronze\" in (r.stdout + r.stderr)\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "serverless-lakehouse__896803f-1",
+   "repo": "serverless-lakehouse",
+   "commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+   "base_commit": "63fc534315f7c0835d1b04508595972239eed0ae",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Audit fixes: manifest-driven silver, ledger repair, endpoint ids, Space on Docker/hf, cost proxy, seed evidence",
+   "bundled": true,
+   "gold_hunks": [
+    48
+   ],
+   "gold_files": [
+    "seeds/gpu_labels.csv"
+   ],
+   "gold_patch": "diff --git a/seeds/gpu_labels.csv b/seeds/gpu_labels.csv\nindex c6e8526..4ffc195 100644\n--- a/seeds/gpu_labels.csv\n+++ b/seeds/gpu_labels.csv\n@@ -1,15 +1,15 @@\n-gpu_label,tier,gpu_model,price_per_hr_usd,price_source,notes\n-24GB-0.69,24 GB flex,,0.69,Pulse/bench/logs/gpu_per_cycle.txt,GPU model not read off the Workers tab before the workers were gone; 21 tok/s single-stream on 8B bf16 is consistent with an L4\n-24GBPRO-1.10,24 GB PRO flex,RTX 4090,1.10,Pulse/bench/logs/gpu_per_cycle.txt,RTX 4090 in US-NC-1 for the completed cycles; PRO 6000 MIG 24GB placements (US-PA-1 / US-WA-1) hung at model init and were terminated\n-48GB-1.22,48 GB flex,A40,1.22,Pulse/bench/quality.csv rate_source (Runpod console 2026-09-23),\n-48GB-A40-1.22,48 GB flex,A40,1.22,Pulse/bench/quality.csv rate_source (Runpod console 2026-09-23),\n-RTX 4090,24 GB PRO flex,RTX 4090,1.10,Pulse/bench/logs/gpu_per_cycle.txt (24 GB PRO tier price),emberserve series all ran on RTX 4090 under the 24 GB PRO tier\n-4090-vol,network-volume run,RTX 4090,,,\"network volume experiment; price not recorded\"\n-A100-vol,network-volume run,A100,,,\"network volume experiment; price not recorded\"\n-A100-vol-parked,network-volume run,A100,,,\"parked worker reused; price not recorded\"\n-A100-vol2,network-volume run,A100,,,\"network volume experiment; price not recorded\"\n-A100-vol-nocache,network-volume run,A100,,,\"volume populated with no cache; price not recorded\"\n-A100-vol-nocache-c1,network-volume run,A100,,,\"cache-hit cycle 1; price not recorded\"\n-A100-vol-nocache-c2,network-volume run,A100,,,\"cache-hit cycle 2; price not recorded\"\n-H100-vol2,network-volume run,H100,,,\"network volume experiment; price not recorded\"\n-H100-vol2-ghost,network-volume run,H100,,,\"ghost worker (hung at model init); price not recorded\"\n+gpu_label,tier,gpu_model,price_per_hr_usd,evidence,source,notes\n+24GB-0.69,24 GB flex,,0.69,unknown,seeds/evidence/gpu_per_cycle.txt (runs 1-5),GPU model not read off the Workers tab before the workers were gone; 21 tok/s single-stream on 8B bf16 is consistent with an L4 \u2014 not asserted\n+24GBPRO-1.10,24 GB PRO flex,RTX 4090,1.1,observed,\"seeds/evidence/gpu_per_cycle.txt (run 6 cycles 0-2: RTX 4090, US-NC-1)\",PRO 6000 MIG 24GB placements (US-PA-1 / US-WA-1) hung at model init and served no request\n+48GB-1.22,48 GB flex,RTX A6000,1.22,inferred,worker log file names q32awq_cold_worker_A6000_SE1.log / q32awq_runs_worker_A6000_SE1.log for this endpoint's runs; quality.csv rate_source for Qwen3-32B-AWQ says RTX A6000 48G,\"the same $1.22 tier also served A40s (runs 7-8), so price alone does not identify the GPU; the 32B-AWQ endpoint 29fqxvabtskzb8 is the only user of this label\"\n+48GB-A40-1.22,48 GB flex,A40,1.22,observed,seeds/evidence/gpu_per_cycle.txt (runs 7-8) and the label itself,\n+RTX 4090,24 GB PRO flex,RTX 4090,1.1,inferred,emberserve series labels name the GPU; the $/hr is the 24 GB PRO tier price from seeds/evidence/gpu_per_cycle.txt,emberserve endpoints were created with the RTX 4090 tier; price assumed equal to the Pulse 24 GB PRO tier on Sep 23\n+4090-vol,network-volume run,RTX 4090,,inferred,label,network volume experiment; price not recorded\n+A100-vol,network-volume run,A100,,inferred,label,network volume experiment; price not recorded\n+A100-vol-parked,network-volume run,A100,,inferred,label,parked worker reused; price not recorded\n+A100-vol2,network-volume run,A100,,inferred,label,network volume experiment; price not recorded\n+A100-vol-nocache,network-volume run,A100,,inferred,label,volume populated with no cache; price not recorded\n+A100-vol-nocache-c1,network-volume run,A100,,inferred,label,cache-hit cycle 1; price not recorded\n+A100-vol-nocache-c2,network-volume run,A100,,inferred,label,cache-hit cycle 2; price not recorded\n+H100-vol2,network-volume run,H100,,inferred,label,network volume experiment; price not recorded\n+H100-vol2-ghost,network-volume run,H100,,inferred,label,ghost worker (hung at model init); price not recorded\n",
+   "gold_lines": 30,
+   "FAIL_TO_PASS": [
+    "tests/test_seeds.py::test_gpu_labels"
+   ],
+   "test_patch": "diff --git a/tests/test_redact.py b/tests/test_redact.py\nindex 0d42580..0e79b15 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -28,6 +28,9 @@ def test_already_redacted_and_benign_text_untouched():\n         \"revision/b968826d9c46dd6066d109eabc6255188de91218\",       # HF commit hash in a URL\n         \"fixture_sha,7e6005269552\", \"worker_id=80fcxq58vdfrqt\",      # ids that are not credentials\n         \"export RUNPOD_API_KEY=...   ENDPOINT_ID=kbme98hqtjthdl\",    # runbook placeholder\n+        '\"tokenizer\": \"models/Qwen2.5-0.5B-Instruct\"',               # \"token\" inside \"tokenizer\" is not a secret\n+        '\"max_tokens\": 16, \"prompt_tokens\": 53404',\n+        '\"first_token_s\": 2073169.405621416, \"arrival_s\": 2073168.797192291',   # numeric values are never secrets\n     ]\n     for s in benign:\n         out, hits = redact(s)\n@@ -35,6 +38,21 @@ def test_already_redacted_and_benign_text_untouched():\n         assert find(s) == []\n \n \n+def test_compound_key_names_and_base64_values():\n+    v = \"+\" + \"ab/CD\" * 5 + \"==\"                              # base64-ish, starts with '+'\n+    for line in (f\"AWS_SECRET_ACCESS_KEY={v}\", f\"OPENROUTER_API_KEY: '{v}'\", f'\"my_token_value\": \"{v}\"'):\n+        out, hits = redact(line)\n+        assert v not in out and hits[\"kv_secret\"] == 1, line\n+\n+\n+def test_more_token_shapes():\n+    pat = \"github_pat_\" + \"x\" * 22 + \"_\" + \"Y\" * 40\n+    jwt = \"eyJ\" + \"a\" * 20 + \".eyJ\" + \"b\" * 20 + \".\" + \"c\" * 20\n+    for tok, name in ((pat, \"github_pat\"), (jwt, \"jwt\"), (\"ASIA\" + \"Q\" * 16, \"aws_access_key\"), (\"xoxb-\" + \"1\" * 12 + \"-abc\", \"slack_token\")):\n+        out, hits = redact(f\"value {tok} end\")\n+        assert tok not in out and hits[name] == 1, name\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_seeds.py b/tests/test_seeds.py\nnew file mode 100644\nindex 0000000..c96efba\n--- /dev/null\n+++ b/tests/test_seeds.py\n@@ -0,0 +1,53 @@\n+\"\"\"Seeds are hand-written CSVs; a stray comma shifts every column after it. Check shape and enumerations.\"\"\"\n+\n+import csv\n+from pathlib import Path\n+\n+ROOT = Path(__file__).resolve().parent.parent / \"seeds\"\n+\n+\n+def rows(name):\n+    with (ROOT / name).open(newline=\"\", encoding=\"utf-8\") as f:\n+        r = csv.DictReader(f)\n+        out = list(r)\n+        assert all(None not in row and None not in row.values() for row in out), f\"{name}: ragged row (unquoted comma?)\"\n+        return r.fieldnames, out\n+\n+\n+def test_coldstart_series():\n+    cols, data = rows(\"coldstart_series.csv\")\n+    assert cols == [\"series_label\", \"engine\", \"engine_build\", \"model\", \"gpu_model\", \"flashboot\", \"flashboot_source\",\n+                    \"weights_mode\", \"image_gb\", \"notes\"]\n+    assert len(data) == 13 and len({r[\"series_label\"] for r in data}) == 13\n+    for r in data:\n+        assert r[\"engine\"] in (\"emberserve\", \"worker-vllm\"), r\n+        assert r[\"flashboot\"] in (\"on\", \"off\", \"unknown\"), r\n+        assert r[\"weights_mode\"] in (\"baked\", \"fetched\"), r\n+        assert r[\"flashboot_source\"], r\n+\n+\n+def test_gpu_labels():\n+    cols, data = rows(\"gpu_labels.csv\")\n+    assert cols == [\"gpu_label\", \"tier\", \"gpu_model\", \"price_per_hr_usd\", \"evidence\", \"source\", \"notes\"]\n+    assert len({r[\"gpu_label\"] for r in data}) == len(data)\n+    for r in data:\n+        assert r[\"evidence\"] in (\"observed\", \"inferred\", \"unknown\"), r\n+        assert r[\"source\"], r\n+        if r[\"price_per_hr_usd\"]:\n+            float(r[\"price_per_hr_usd\"])\n+        if r[\"evidence\"] == \"unknown\":\n+            assert r[\"gpu_model\"] == \"\", r      # unknown means unknown, not a guess\n+\n+\n+def test_run_notes():\n+    cols, data = rows(\"coldstart_run_notes.csv\")\n+    assert cols == [\"series_label\", \"run_index\", \"host_state\", \"evidence\", \"note\", \"source\"]\n+    for r in data:\n+        int(r[\"run_index\"])\n+        assert r[\"host_state\"] in (\"fresh_host\", \"warm_host\", \"partial_host\", \"flashboot_resume\"), r\n+        assert r[\"evidence\"] and r[\"source\"], r\n+    assert len({(r[\"series_label\"], r[\"run_index\"]) for r in data}) == len(data)\n+\n+\n+def test_evidence_file_present():\n+    assert (ROOT / \"evidence\" / \"gpu_per_cycle.txt\").is_file()\ndiff --git a/tests/test_snapshot_scenarios.py b/tests/test_snapshot_scenarios.py\nnew file mode 100644\nindex 0000000..61dc6e3\n--- /dev/null\n+++ b/tests/test_snapshot_scenarios.py\n@@ -0,0 +1,123 @@\n+\"\"\"End-to-end scenarios the first external audit reproduced: silver must follow the landing manifest, not\n+bronze's newest timestamp; the ingest ledger must self-repair. Runs the real CLIs against a throw-away landing\n+and lakehouse (parquet, so no Delta jars needed) \u2014 slow (~2 min), needs Java.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import csv\n+import json\n+import os\n+import shutil\n+import subprocess\n+import sys\n+from pathlib import Path\n+\n+import pytest\n+\n+ROOT = Path(__file__).resolve().parent.parent\n+pytestmark = [pytest.mark.slow, pytest.mark.skipif(shutil.which(\"java\") is None, reason=\"needs a JVM\")]\n+\n+\n+def coldstart(label: str, n_runs: int) -> str:\n+    runs = [{\"health_before\": {\"workers\": {\"idle\": 1}},\n+             \"cold\": {\"status\": 200, \"total_s\": 20.0 + i, \"ok\": True, \"job_status\": \"COMPLETED\", \"delay_ms\": 19000 + i, \"execution_ms\": 900, \"worker_id\": f\"w{i}\"},\n+             \"warm\": {\"status\": 200, \"total_s\": 0.5, \"ok\": True, \"job_status\": \"COMPLETED\", \"delay_ms\": 20, \"execution_ms\": 400, \"worker_id\": f\"w{i}\"}}\n+            for i in range(n_runs)]\n+    return json.dumps({\"kind\": \"serverless_coldstart\", \"mode\": \"queue\", \"endpoint\": \"ep1\", \"label\": label, \"image\": \"test\",\n+                       \"note\": \"\", \"max_tokens\": 16, \"idle_s\": 60.0, \"runs\": runs, \"summary\": {\"failures\": 0}})\n+\n+\n+def sweep(with_records: bool) -> str:\n+    run = {\"request_rate\": 1.0, \"wall_s\": 10.0, \"summary\": {\"num_requests\": 2, \"completed\": 2, \"failed\": 0}, \"trace\": {\"n\": 2}}\n+    if with_records:\n+        run[\"records\"] = [{\"request_id\": f\"req-{i}\", \"arrival_s\": 1.0 + i, \"first_token_s\": 1.5 + i, \"finish_s\": 2.0 + i,\n+                           \"prompt_tokens\": 10, \"output_tokens\": 5, \"success\": True, \"error\": None} for i in range(2)]\n+    return json.dumps({\"kind\": \"sweep\", \"system\": \"sys\", \"server\": \"vllm\", \"base_url\": \"https://api.runpod.ai/v2/ep1/openai/v1\",\n+                       \"model\": \"m\", \"args\": {\"api_key\": \"<redacted>\"}, \"runs\": [run]})\n+\n+\n+class Pipeline:\n+    def __init__(self, tmp: Path):\n+        self.src = tmp / \"src\"\n+        (self.src / \"emberserve\" / \"results\").mkdir(parents=True)\n+        (self.src / \"pulse\").mkdir()\n+        self.env = {**os.environ, \"LANDING_DIR\": str(tmp / \"landing\"), \"LAKEHOUSE_DIR\": str(tmp / \"lakehouse\"),\n+                    \"SPARK_LOCAL_IP\": \"127.0.0.1\"}\n+        self.results = self.src / \"emberserve\" / \"results\"\n+\n+    def run(self, *mod: str) -> str:\n+        out = subprocess.run([sys.executable, \"-m\", f\"lakehouse.{mod[0]}\", *mod[1:]], cwd=ROOT, env=self.env,\n+                             capture_output=True, text=True)\n+        assert out.returncode == 0, out.stdout[-2000:] + out.stderr[-3000:]\n+        return out.stdout\n+\n+    def land(self):\n+        return self.run(\"land\", \"--emberserve\", str(self.src / \"emberserve\"), \"--pulse\", str(self.src / \"pulse\"),\n+                        \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+\n+    def bronze(self, label: str):\n+        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+\n+    def silver(self):\n+        return self.run(\"silver\", \"--format\", \"parquet\")\n+\n+    def count(self, table: str, **where) -> int:\n+        \"\"\"Count rows in a parquet table without starting a JVM.\"\"\"\n+        import glob\n+        import pyarrow.parquet as pq\n+        files = glob.glob(str(Path(self.env[\"LAKEHOUSE_DIR\"]) / \"silver\" / table / \"*.parquet\")) or \\\n+                glob.glob(str(Path(self.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / table / \"*.parquet\"))\n+        n = 0\n+        for f in files:\n+            t = pq.read_table(f).to_pylist()\n+            n += sum(1 for r in t if all(r.get(k) == v for k, v in where.items()))\n+        return n\n+\n+\n+@pytest.fixture(scope=\"module\")\n+def pipe(tmp_path_factory):\n+    pytest.importorskip(\"pyarrow\")\n+    return Pipeline(tmp_path_factory.mktemp(\"lh\"))\n+\n+\n+def test_revert_rename_and_empty_records_follow_the_manifest(pipe: Pipeline):\n+    A, B = coldstart(\"series_a\", 2), coldstart(\"series_a\", 1)\n+    f = pipe.results / \"serverless_coldstart_a.json\"\n+    f.write_text(A); pipe.land(); pipe.bronze(\"r1\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4                 # 2 runs \u00d7 cold+warm\n+\n+    f.write_text(B); pipe.land(); pipe.bronze(\"r2\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 2                 # replacement selected\n+\n+    f.write_text(A); pipe.land()\n+    out = pipe.bronze(\"r3\")\n+    assert \"nothing new\" in out                                         # (path, sha) of A already in bronze\n+    pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4                 # reverted file selected again, not \"newest\"\n+\n+    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4\n+    assert pipe.count(\"silver_coldstart_requests\", source_file=\"emberserve/results/serverless_coldstart_a.json\") == 0\n+\n+    sw = pipe.results / \"runpod_serverless_s.json\"\n+    sw.write_text(sweep(True)); pipe.land(); pipe.bronze(\"r5\"); pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 2\n+    sw.write_text(sweep(False)); pipe.land(); pipe.bronze(\"r6\"); pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 0                     # no records in the current version \u2192 none in silver\n+    assert pipe.count(\"silver_sweep_summaries\") == 1\n+\n+\n+def test_interrupted_run_repairs_the_ingest_log(pipe: Pipeline):\n+    log_dir = Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_ingest_log\"\n+    shutil.rmtree(log_dir)                                              # data tables written, ledger lost\n+    out = pipe.bronze(\"r7\")\n+    assert \"repaired\" in out, out\n+    assert pipe.count(\"bronze_ingest_log\", reconciled=True) > 0\n+\n+\n+def test_silver_refuses_when_bronze_lacks_the_current_version(pipe: Pipeline):\n+    (pipe.results / \"serverless_coldstart_new.json\").write_text(coldstart(\"series_new\", 1)); pipe.land()\n+    r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=pipe.env,\n+                       capture_output=True, text=True)\n+    assert r.returncode != 0 and \"not in bronze\" in (r.stdout + r.stderr)\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "serverless-lakehouse__896803f-2",
+   "repo": "serverless-lakehouse",
+   "commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+   "base_commit": "63fc534315f7c0835d1b04508595972239eed0ae",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Audit fixes: manifest-driven silver, ledger repair, endpoint ids, Space on Docker/hf, cost proxy, seed evidence",
+   "bundled": true,
+   "gold_hunks": [
+    46
+   ],
+   "gold_files": [
+    "seeds/coldstart_run_notes.csv"
+   ],
+   "gold_patch": "diff --git a/seeds/coldstart_run_notes.csv b/seeds/coldstart_run_notes.csv\nindex 27619df..3ba7c0d 100644\n--- a/seeds/coldstart_run_notes.csv\n+++ b/seeds/coldstart_run_notes.csv\n@@ -1,8 +1,8 @@\n-series_label,run_index,host_state,note,source\n-vllm_qwen3_8b_4090_flashboot_on,0,fresh_host,\"first boot of the night on endpoint rvy2p7bfia91fm (210 s); not one of the samples in the Sep 30 write-up\",Ashwin 2026-10-02\n-vllm_qwen3_8b_4090_flashboot_on,1,warm_host,\"same-night rerun (154.3 s); one of the two samples behind the Sep 30 write-up's 147.5 s\",Ashwin 2026-10-02\n-vllm_qwen3_8b_4090_flashboot_on,2,flashboot_resume,\"532 ms FlashBoot resume\",file note\n-vllm_qwen3_8b_4090_flashboot_off_b,0,warm_host,\"same-night rerun with FlashBoot off (140.7 s); the other sample behind the 147.5 s\",Ashwin 2026-10-02\n-pagedserve_qwen3_8b_4090_fresh_host,0,fresh_host,\"first job to a brand-new endpoint; includes the 27 GB image pull\",file image field\n-pagedserve_slim_qwen3_8b_4090_fresh_host,0,fresh_host,\"fresh host; includes the image pull\",file label\n-pagedserve_slim_qwen3_8b_4090_first_after_rollout,0,partial_host,\"host already had most image layers from a failed earlier attempt\",file note\n+series_label,run_index,host_state,evidence,note,source\n+vllm_qwen3_8b_4090_flashboot_on,0,fresh_host,author testimony,first boot of the night on endpoint rvy2p7bfia91fm (210 s); not one of the samples in the Sep 30 write-up,Ashwin 2026-10-02\n+vllm_qwen3_8b_4090_flashboot_on,1,warm_host,author testimony,same-night rerun (154.3 s); one of the two samples behind the Sep 30 write-up's 147.5 s,Ashwin 2026-10-02\n+vllm_qwen3_8b_4090_flashboot_on,2,flashboot_resume,file note (observed),532 ms FlashBoot resume,file note\n+vllm_qwen3_8b_4090_flashboot_off_b,0,warm_host,author testimony,same-night rerun with FlashBoot off (140.7 s); the other sample behind the 147.5 s,Ashwin 2026-10-02\n+pagedserve_qwen3_8b_4090_fresh_host,0,fresh_host,author label at run time,first job to a brand-new endpoint; includes the 27 GB image pull,file image field\n+pagedserve_slim_qwen3_8b_4090_fresh_host,0,fresh_host,author label at run time,fresh host; includes the image pull,file label\n+pagedserve_slim_qwen3_8b_4090_first_after_rollout,0,partial_host,file note (observed),host already had most image layers from a failed earlier attempt,file note\n",
+   "gold_lines": 16,
+   "FAIL_TO_PASS": [
+    "tests/test_seeds.py::test_run_notes"
+   ],
+   "test_patch": "diff --git a/tests/test_redact.py b/tests/test_redact.py\nindex 0d42580..0e79b15 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -28,6 +28,9 @@ def test_already_redacted_and_benign_text_untouched():\n         \"revision/b968826d9c46dd6066d109eabc6255188de91218\",       # HF commit hash in a URL\n         \"fixture_sha,7e6005269552\", \"worker_id=80fcxq58vdfrqt\",      # ids that are not credentials\n         \"export RUNPOD_API_KEY=...   ENDPOINT_ID=kbme98hqtjthdl\",    # runbook placeholder\n+        '\"tokenizer\": \"models/Qwen2.5-0.5B-Instruct\"',               # \"token\" inside \"tokenizer\" is not a secret\n+        '\"max_tokens\": 16, \"prompt_tokens\": 53404',\n+        '\"first_token_s\": 2073169.405621416, \"arrival_s\": 2073168.797192291',   # numeric values are never secrets\n     ]\n     for s in benign:\n         out, hits = redact(s)\n@@ -35,6 +38,21 @@ def test_already_redacted_and_benign_text_untouched():\n         assert find(s) == []\n \n \n+def test_compound_key_names_and_base64_values():\n+    v = \"+\" + \"ab/CD\" * 5 + \"==\"                              # base64-ish, starts with '+'\n+    for line in (f\"AWS_SECRET_ACCESS_KEY={v}\", f\"OPENROUTER_API_KEY: '{v}'\", f'\"my_token_value\": \"{v}\"'):\n+        out, hits = redact(line)\n+        assert v not in out and hits[\"kv_secret\"] == 1, line\n+\n+\n+def test_more_token_shapes():\n+    pat = \"github_pat_\" + \"x\" * 22 + \"_\" + \"Y\" * 40\n+    jwt = \"eyJ\" + \"a\" * 20 + \".eyJ\" + \"b\" * 20 + \".\" + \"c\" * 20\n+    for tok, name in ((pat, \"github_pat\"), (jwt, \"jwt\"), (\"ASIA\" + \"Q\" * 16, \"aws_access_key\"), (\"xoxb-\" + \"1\" * 12 + \"-abc\", \"slack_token\")):\n+        out, hits = redact(f\"value {tok} end\")\n+        assert tok not in out and hits[name] == 1, name\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_seeds.py b/tests/test_seeds.py\nnew file mode 100644\nindex 0000000..c96efba\n--- /dev/null\n+++ b/tests/test_seeds.py\n@@ -0,0 +1,53 @@\n+\"\"\"Seeds are hand-written CSVs; a stray comma shifts every column after it. Check shape and enumerations.\"\"\"\n+\n+import csv\n+from pathlib import Path\n+\n+ROOT = Path(__file__).resolve().parent.parent / \"seeds\"\n+\n+\n+def rows(name):\n+    with (ROOT / name).open(newline=\"\", encoding=\"utf-8\") as f:\n+        r = csv.DictReader(f)\n+        out = list(r)\n+        assert all(None not in row and None not in row.values() for row in out), f\"{name}: ragged row (unquoted comma?)\"\n+        return r.fieldnames, out\n+\n+\n+def test_coldstart_series():\n+    cols, data = rows(\"coldstart_series.csv\")\n+    assert cols == [\"series_label\", \"engine\", \"engine_build\", \"model\", \"gpu_model\", \"flashboot\", \"flashboot_source\",\n+                    \"weights_mode\", \"image_gb\", \"notes\"]\n+    assert len(data) == 13 and len({r[\"series_label\"] for r in data}) == 13\n+    for r in data:\n+        assert r[\"engine\"] in (\"emberserve\", \"worker-vllm\"), r\n+        assert r[\"flashboot\"] in (\"on\", \"off\", \"unknown\"), r\n+        assert r[\"weights_mode\"] in (\"baked\", \"fetched\"), r\n+        assert r[\"flashboot_source\"], r\n+\n+\n+def test_gpu_labels():\n+    cols, data = rows(\"gpu_labels.csv\")\n+    assert cols == [\"gpu_label\", \"tier\", \"gpu_model\", \"price_per_hr_usd\", \"evidence\", \"source\", \"notes\"]\n+    assert len({r[\"gpu_label\"] for r in data}) == len(data)\n+    for r in data:\n+        assert r[\"evidence\"] in (\"observed\", \"inferred\", \"unknown\"), r\n+        assert r[\"source\"], r\n+        if r[\"price_per_hr_usd\"]:\n+            float(r[\"price_per_hr_usd\"])\n+        if r[\"evidence\"] == \"unknown\":\n+            assert r[\"gpu_model\"] == \"\", r      # unknown means unknown, not a guess\n+\n+\n+def test_run_notes():\n+    cols, data = rows(\"coldstart_run_notes.csv\")\n+    assert cols == [\"series_label\", \"run_index\", \"host_state\", \"evidence\", \"note\", \"source\"]\n+    for r in data:\n+        int(r[\"run_index\"])\n+        assert r[\"host_state\"] in (\"fresh_host\", \"warm_host\", \"partial_host\", \"flashboot_resume\"), r\n+        assert r[\"evidence\"] and r[\"source\"], r\n+    assert len({(r[\"series_label\"], r[\"run_index\"]) for r in data}) == len(data)\n+\n+\n+def test_evidence_file_present():\n+    assert (ROOT / \"evidence\" / \"gpu_per_cycle.txt\").is_file()\ndiff --git a/tests/test_snapshot_scenarios.py b/tests/test_snapshot_scenarios.py\nnew file mode 100644\nindex 0000000..61dc6e3\n--- /dev/null\n+++ b/tests/test_snapshot_scenarios.py\n@@ -0,0 +1,123 @@\n+\"\"\"End-to-end scenarios the first external audit reproduced: silver must follow the landing manifest, not\n+bronze's newest timestamp; the ingest ledger must self-repair. Runs the real CLIs against a throw-away landing\n+and lakehouse (parquet, so no Delta jars needed) \u2014 slow (~2 min), needs Java.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import csv\n+import json\n+import os\n+import shutil\n+import subprocess\n+import sys\n+from pathlib import Path\n+\n+import pytest\n+\n+ROOT = Path(__file__).resolve().parent.parent\n+pytestmark = [pytest.mark.slow, pytest.mark.skipif(shutil.which(\"java\") is None, reason=\"needs a JVM\")]\n+\n+\n+def coldstart(label: str, n_runs: int) -> str:\n+    runs = [{\"health_before\": {\"workers\": {\"idle\": 1}},\n+             \"cold\": {\"status\": 200, \"total_s\": 20.0 + i, \"ok\": True, \"job_status\": \"COMPLETED\", \"delay_ms\": 19000 + i, \"execution_ms\": 900, \"worker_id\": f\"w{i}\"},\n+             \"warm\": {\"status\": 200, \"total_s\": 0.5, \"ok\": True, \"job_status\": \"COMPLETED\", \"delay_ms\": 20, \"execution_ms\": 400, \"worker_id\": f\"w{i}\"}}\n+            for i in range(n_runs)]\n+    return json.dumps({\"kind\": \"serverless_coldstart\", \"mode\": \"queue\", \"endpoint\": \"ep1\", \"label\": label, \"image\": \"test\",\n+                       \"note\": \"\", \"max_tokens\": 16, \"idle_s\": 60.0, \"runs\": runs, \"summary\": {\"failures\": 0}})\n+\n+\n+def sweep(with_records: bool) -> str:\n+    run = {\"request_rate\": 1.0, \"wall_s\": 10.0, \"summary\": {\"num_requests\": 2, \"completed\": 2, \"failed\": 0}, \"trace\": {\"n\": 2}}\n+    if with_records:\n+        run[\"records\"] = [{\"request_id\": f\"req-{i}\", \"arrival_s\": 1.0 + i, \"first_token_s\": 1.5 + i, \"finish_s\": 2.0 + i,\n+                           \"prompt_tokens\": 10, \"output_tokens\": 5, \"success\": True, \"error\": None} for i in range(2)]\n+    return json.dumps({\"kind\": \"sweep\", \"system\": \"sys\", \"server\": \"vllm\", \"base_url\": \"https://api.runpod.ai/v2/ep1/openai/v1\",\n+                       \"model\": \"m\", \"args\": {\"api_key\": \"<redacted>\"}, \"runs\": [run]})\n+\n+\n+class Pipeline:\n+    def __init__(self, tmp: Path):\n+        self.src = tmp / \"src\"\n+        (self.src / \"emberserve\" / \"results\").mkdir(parents=True)\n+        (self.src / \"pulse\").mkdir()\n+        self.env = {**os.environ, \"LANDING_DIR\": str(tmp / \"landing\"), \"LAKEHOUSE_DIR\": str(tmp / \"lakehouse\"),\n+                    \"SPARK_LOCAL_IP\": \"127.0.0.1\"}\n+        self.results = self.src / \"emberserve\" / \"results\"\n+\n+    def run(self, *mod: str) -> str:\n+        out = subprocess.run([sys.executable, \"-m\", f\"lakehouse.{mod[0]}\", *mod[1:]], cwd=ROOT, env=self.env,\n+                             capture_output=True, text=True)\n+        assert out.returncode == 0, out.stdout[-2000:] + out.stderr[-3000:]\n+        return out.stdout\n+\n+    def land(self):\n+        return self.run(\"land\", \"--emberserve\", str(self.src / \"emberserve\"), \"--pulse\", str(self.src / \"pulse\"),\n+                        \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+\n+    def bronze(self, label: str):\n+        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+\n+    def silver(self):\n+        return self.run(\"silver\", \"--format\", \"parquet\")\n+\n+    def count(self, table: str, **where) -> int:\n+        \"\"\"Count rows in a parquet table without starting a JVM.\"\"\"\n+        import glob\n+        import pyarrow.parquet as pq\n+        files = glob.glob(str(Path(self.env[\"LAKEHOUSE_DIR\"]) / \"silver\" / table / \"*.parquet\")) or \\\n+                glob.glob(str(Path(self.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / table / \"*.parquet\"))\n+        n = 0\n+        for f in files:\n+            t = pq.read_table(f).to_pylist()\n+            n += sum(1 for r in t if all(r.get(k) == v for k, v in where.items()))\n+        return n\n+\n+\n+@pytest.fixture(scope=\"module\")\n+def pipe(tmp_path_factory):\n+    pytest.importorskip(\"pyarrow\")\n+    return Pipeline(tmp_path_factory.mktemp(\"lh\"))\n+\n+\n+def test_revert_rename_and_empty_records_follow_the_manifest(pipe: Pipeline):\n+    A, B = coldstart(\"series_a\", 2), coldstart(\"series_a\", 1)\n+    f = pipe.results / \"serverless_coldstart_a.json\"\n+    f.write_text(A); pipe.land(); pipe.bronze(\"r1\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4                 # 2 runs \u00d7 cold+warm\n+\n+    f.write_text(B); pipe.land(); pipe.bronze(\"r2\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 2                 # replacement selected\n+\n+    f.write_text(A); pipe.land()\n+    out = pipe.bronze(\"r3\")\n+    assert \"nothing new\" in out                                         # (path, sha) of A already in bronze\n+    pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4                 # reverted file selected again, not \"newest\"\n+\n+    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == 4\n+    assert pipe.count(\"silver_coldstart_requests\", source_file=\"emberserve/results/serverless_coldstart_a.json\") == 0\n+\n+    sw = pipe.results / \"runpod_serverless_s.json\"\n+    sw.write_text(sweep(True)); pipe.land(); pipe.bronze(\"r5\"); pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 2\n+    sw.write_text(sweep(False)); pipe.land(); pipe.bronze(\"r6\"); pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 0                     # no records in the current version \u2192 none in silver\n+    assert pipe.count(\"silver_sweep_summaries\") == 1\n+\n+\n+def test_interrupted_run_repairs_the_ingest_log(pipe: Pipeline):\n+    log_dir = Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_ingest_log\"\n+    shutil.rmtree(log_dir)                                              # data tables written, ledger lost\n+    out = pipe.bronze(\"r7\")\n+    assert \"repaired\" in out, out\n+    assert pipe.count(\"bronze_ingest_log\", reconciled=True) > 0\n+\n+\n+def test_silver_refuses_when_bronze_lacks_the_current_version(pipe: Pipeline):\n+    (pipe.results / \"serverless_coldstart_new.json\").write_text(coldstart(\"series_new\", 1)); pipe.land()\n+    r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=pipe.env,\n+                       capture_output=True, text=True)\n+    assert r.returncode != 0 and \"not in bronze\" in (r.stdout + r.stderr)\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  }
+ ]
+}

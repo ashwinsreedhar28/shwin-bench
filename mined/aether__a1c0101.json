@@ -1,0 +1,273 @@
+{
+ "repo": "aether",
+ "commit": "a1c010106da9d8dd59c581e448f2d6e786eed539",
+ "base_commit": "99cbf5a6c6de80ddcd88e821e3f6f80763492c5d",
+ "subject": "fix(raven): resolve app display names and id drift in voice open_app (#307)",
+ "date": "2026-06-11",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "daemons/raven-core/raven_core/tools/viewer_tool.py",
+   "lines": 5
+  },
+  {
+   "i": 1,
+   "path": "daemons/raven-core/raven_core/tools/viewer_tool.py",
+   "lines": 4
+  },
+  {
+   "i": 2,
+   "path": "daemons/raven-core/raven_core/tools/viewer_tool.py",
+   "lines": 58
+  },
+  {
+   "i": 3,
+   "path": "daemons/raven-core/raven_core/tools/viewer_tool.py",
+   "lines": 8
+  },
+  {
+   "i": 4,
+   "path": "daemons/raven-core/raven_core/tools/viewer_tool.py",
+   "lines": 3
+  },
+  {
+   "i": 5,
+   "path": "daemons/raven-core/raven_core/tools/viewer_tool.py",
+   "lines": 5
+  }
+ ],
+ "new_tests": [
+  "tests/test_viewer_tool_resolution.py::test_app_hints_exist_in_shell_registry",
+  "tests/test_viewer_tool_resolution.py::test_fuzzy_exact_id_still_wins",
+  "tests/test_viewer_tool_resolution.py::test_fuzzy_matches_display_name_when_id_drifted",
+  "tests/test_viewer_tool_resolution.py::test_fuzzy_no_match_returns_empty",
+  "tests/test_viewer_tool_resolution.py::test_fuzzy_substring_containment_on_ids",
+  "tests/test_viewer_tool_resolution.py::test_fuzzy_tolerates_nameless_entries",
+  "tests/test_viewer_tool_resolution.py::test_handle_call_accepts_id_alias",
+  "tests/test_viewer_tool_resolution.py::test_open_app_empty_id_still_lists_apps",
+  "tests/test_viewer_tool_resolution.py::test_open_app_falls_back_to_bare_ids_when_registry_read_fails",
+  "tests/test_viewer_tool_resolution.py::test_open_app_resolves_name_and_retries_once",
+  "tests/test_viewer_tool_resolution.py::test_open_app_unknown_id_returns_available_apps"
+ ],
+ "dropped_not_failing": [
+  "tests/test_viewer_tool_resolution.py::test_open_app_falls_back_to_bare_ids_when_registry_read_fails",
+  "tests/test_viewer_tool_resolution.py::test_open_app_unknown_id_returns_available_apps"
+ ],
+ "dropped_not_passing": [],
+ "tasks": [
+  {
+   "task_id": "aether__a1c0101-0",
+   "repo": "aether",
+   "commit": "a1c010106da9d8dd59c581e448f2d6e786eed539",
+   "base_commit": "99cbf5a6c6de80ddcd88e821e3f6f80763492c5d",
+   "commit_date": "2026-06-11",
+   "commit_subject": "fix(raven): resolve app display names and id drift in voice open_app (#307)",
+   "bundled": true,
+   "gold_hunks": [
+    1
+   ],
+   "gold_files": [
+    "daemons/raven-core/raven_core/tools/viewer_tool.py"
+   ],
+   "gold_patch": "diff --git a/daemons/raven-core/raven_core/tools/viewer_tool.py b/daemons/raven-core/raven_core/tools/viewer_tool.py\nindex ce1be6e..cbf9ec5 100644\n--- a/daemons/raven-core/raven_core/tools/viewer_tool.py\n+++ b/daemons/raven-core/raven_core/tools/viewer_tool.py\n@@ -42,8 +45,8 @@ APP_HINTS = (\n     \"calculator\",\n     \"settings\",\n     \"kanban-board\",\n-    \"markdown-editor\",\n-    \"text-editor\",\n+    \"markdown-viewer\",\n+    \"text-viewer\",\n )\n \n # Mirrors LAYOUT_PRESETS in shell/electron/main/services/viewerNode.ts.\n",
+   "gold_lines": 4,
+   "FAIL_TO_PASS": [
+    "tests/test_viewer_tool_resolution.py::test_app_hints_exist_in_shell_registry"
+   ],
+   "test_patch": "diff --git a/daemons/raven-core/tests/test_viewer_tool_resolution.py b/daemons/raven-core/tests/test_viewer_tool_resolution.py\nnew file mode 100644\nindex 0000000..bc58853\n--- /dev/null\n+++ b/daemons/raven-core/tests/test_viewer_tool_resolution.py\n@@ -0,0 +1,167 @@\n+\"\"\"App-id resolution semantics for the viewer tool (#243): name-aware\n+fuzzy matching ('text editor' must find id 'text-viewer'), the `id`\n+alias for open_app's app_id argument, failure results that always carry\n+the valid ids, and an anti-drift gate pinning APP_HINTS to the shell's\n+live app registry source.\n+\n+The mesh hop is mocked (patch viewer_tool.mesh_invoke), so these run\n+without a live mesh.\n+\"\"\"\n+import asyncio\n+import re\n+import sys\n+import unittest.mock as mock\n+from pathlib import Path\n+\n+sys.path.insert(0, str(Path(__file__).parent.parent))\n+\n+# Same global mock test_tool_registry.py uses: importing raven_core.tools\n+# (the package __init__) pulls session_context's deep import chain.\n+if \"raven_core.session_context\" not in sys.modules:\n+    sys.modules[\"raven_core.session_context\"] = mock.MagicMock()\n+\n+import pytest\n+\n+import raven_core.tools.viewer_tool as vt\n+\n+REGISTRY = [\n+    {\"id\": \"browser\", \"name\": \"Browser\"},\n+    {\"id\": \"kanban-board\", \"name\": \"Kanban\"},\n+    {\"id\": \"markdown-viewer\", \"name\": \"Markdown Editor\"},\n+    {\"id\": \"text-viewer\", \"name\": \"Text Editor\"},\n+    {\"id\": \"terminal\", \"name\": \"Terminal\"},\n+]\n+REGISTRY_IDS = [a[\"id\"] for a in REGISTRY]\n+\n+\n+# ---------------------------------------------------------------- fuzzy match\n+\n+def test_fuzzy_matches_display_name_when_id_drifted():\n+    # The drift that kept #243 alive: apps NAMED 'Markdown Editor' /\n+    # 'Text Editor' register under -viewer ids.\n+    assert vt._fuzzy_match_app(\"text-editor\", REGISTRY) == [\"text-viewer\"]\n+    assert vt._fuzzy_match_app(\"markdown editor\", REGISTRY) == [\"markdown-viewer\"]\n+\n+\n+def test_fuzzy_exact_id_still_wins():\n+    assert vt._fuzzy_match_app(\"kanban-board\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_substring_containment_on_ids():\n+    assert vt._fuzzy_match_app(\"kanban\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_no_match_returns_empty():\n+    assert vt._fuzzy_match_app(\"flux-capacitor\", REGISTRY) == []\n+    assert vt._fuzzy_match_app(\"\", REGISTRY) == []\n+\n+\n+def test_fuzzy_tolerates_nameless_entries():\n+    # The fallback path wraps bare ids as {'id': ...} dicts with no name.\n+    assert vt._fuzzy_match_app(\"text viewer\", [{\"id\": \"text-viewer\"}]) == [\n+        \"text-viewer\"\n+    ]\n+\n+\n+# ------------------------------------------------------------------ open_app\n+\n+def _mesh(responses):\n+    \"\"\"Mock mesh_invoke returning queued responses per surface.\"\"\"\n+\n+    async def invoke(surface, payload):\n+        handler = responses[surface]\n+        return handler.pop(0) if isinstance(handler, list) else handler\n+\n+    return invoke\n+\n+\n+def test_open_app_resolves_name_and_retries_once():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    hit = {\"ok\": True, \"windowId\": \"w1\"}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss, hit],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"text editor\", \"\"))\n+    assert result == {\n+        \"ok\": True,\n+        \"app_id\": \"text-viewer\",\n+        \"resolved_from\": \"text editor\",\n+        \"window_id\": \"w1\",\n+    }\n+\n+\n+def test_open_app_unknown_id_returns_available_apps():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"flux-capacitor\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"unknown_app\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+    assert result[\"did_you_mean\"] is None\n+\n+\n+def test_open_app_falls_back_to_bare_ids_when_registry_read_fails():\n+    queue = [\n+        {\"ok\": False, \"available\": REGISTRY_IDS},\n+        {\"ok\": True, \"windowId\": \"w2\"},\n+    ]\n+\n+    async def invoke(surface, payload):\n+        if surface == \"viewer_desktop.list_apps\":\n+            raise vt.MeshUnavailable(\"down\")\n+        return queue.pop(0)\n+\n+    with mock.patch.object(vt, \"mesh_invoke\", invoke):\n+        result = asyncio.run(vt._open_app(\"kanban\", \"\"))\n+    assert result[\"ok\"] is True\n+    assert result[\"app_id\"] == \"kanban-board\"\n+\n+\n+def test_open_app_empty_id_still_lists_apps():\n+    responses = {\"viewer_desktop.list_apps\": {\"apps\": REGISTRY}}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"bad_app_id\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+\n+\n+def test_handle_call_accepts_id_alias():\n+    # Older prompt examples taught open_app({ id: ... }); the handler\n+    # must not dead-end on the alias.\n+    hit = {\"ok\": True, \"windowId\": \"w3\"}\n+    responses = {\"viewer_desktop.open_app\": [hit]}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt.handle_call_async(\"open_app\", {\"id\": \"browser\"}))\n+    assert result == {\"ok\": True, \"app_id\": \"browser\", \"window_id\": \"w3\"}\n+\n+\n+# ----------------------------------------------------------------- anti-drift\n+\n+def _shell_registry_ids():\n+    \"\"\"Extract registered app ids from the shell's auto-glob source.\"\"\"\n+    apps_dir = Path(__file__).resolve().parents[3] / \"shell\" / \"src\" / \"apps\"\n+    if not apps_dir.is_dir():\n+        pytest.skip(\"shell/src/apps not present in this checkout\")\n+    ids = set()\n+    for index in apps_dir.glob(\"*/index.ts\"):\n+        m = re.search(r\"id:\\s*['\\\"]([^'\\\"]+)['\\\"]\", index.read_text())\n+        if m:\n+            ids.add(m.group(1))\n+    return ids\n+\n+\n+def test_app_hints_exist_in_shell_registry():\n+    # APP_HINTS is deliberately a non-load-bearing subset, but every\n+    # entry must be a VERBATIM registry id \u2014 'markdown-editor' /\n+    # 'text-editor' drifted dead once (#243) and the model dutifully\n+    # passed them.\n+    registry = _shell_registry_ids()\n+    stale = set(vt.APP_HINTS) - registry\n+    assert not stale, f\"APP_HINTS entries missing from shell registry: {stale}\"\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_report_gap_gate.py::test_auto_file_files_on_first_call",
+    "tests/test_report_gap_gate.py::test_confirmed_allowed_past_limit",
+    "tests/test_report_gap_gate.py::test_confirmed_files_full_contract_payload",
+    "tests/test_report_gap_gate.py::test_declaration_carries_contract_params",
+    "tests/test_report_gap_gate.py::test_deduped_does_not_hide_ok",
+    "tests/test_report_gap_gate.py::test_mesh_unavailable_does_not_count",
+    "tests/test_report_gap_gate.py::test_missing_area_or_summary_errors",
+    "tests/test_report_gap_gate.py::test_no_config_defaults_to_confirmation_gate",
+    "tests/test_report_gap_gate.py::test_no_token_deny_is_named",
+    "tests/test_report_gap_gate.py::test_rate_guard_suspends_auto_file",
+    "tests/test_report_gap_gate.py::test_review_gaps_no_token_is_error_not_empty_board",
+    "tests/test_report_gap_gate.py::test_review_gaps_passes_stale_through",
+    "tests/test_report_gap_gate.py::test_review_gaps_reads_gap_labeled_board",
+    "tests/test_report_gap_gate.py::test_session_id_reminted_on_reset",
+    "tests/test_report_gap_gate.py::test_unconfirmed_returns_pending_and_files_nothing",
+    "tests/test_report_gap_gate.py::test_utterance_falls_back_to_summary",
+    "tests/test_tool_registry.py::test_all_modules_have_required_exports",
+    "tests/test_tool_registry.py::test_get_all_tool_declarations_returns_tools",
+    "tests/test_tool_registry.py::test_get_registered_functions_returns_function_names",
+    "tests/test_tool_registry.py::test_registry_discovers_expected_modules",
+    "tests/test_tool_registry.py::test_registry_excludes_disabled_modules",
+    "tests/test_tool_registry.py::test_registry_order_is_stable"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "aether__a1c0101-1",
+   "repo": "aether",
+   "commit": "a1c010106da9d8dd59c581e448f2d6e786eed539",
+   "base_commit": "99cbf5a6c6de80ddcd88e821e3f6f80763492c5d",
+   "commit_date": "2026-06-11",
+   "commit_subject": "fix(raven): resolve app display names and id drift in voice open_app (#307)",
+   "bundled": true,
+   "gold_hunks": [
+    2
+   ],
+   "gold_files": [
+    "daemons/raven-core/raven_core/tools/viewer_tool.py"
+   ],
+   "gold_patch": "diff --git a/daemons/raven-core/raven_core/tools/viewer_tool.py b/daemons/raven-core/raven_core/tools/viewer_tool.py\nindex ce1be6e..cbf9ec5 100644\n--- a/daemons/raven-core/raven_core/tools/viewer_tool.py\n+++ b/daemons/raven-core/raven_core/tools/viewer_tool.py\n@@ -55,31 +58,59 @@ def _normalize_app_id(s: str) -> str:\n     return \"\".join(c for c in s.lower() if c.isalnum())\n \n \n-def _fuzzy_match_app(requested: str, available: list[str]) -> list[str]:\n-    \"\"\"Resolve a spoken/guessed app id against the live registry ids.\n+def _fuzzy_match_app(requested: str, apps: list[dict[str, Any]]) -> list[str]:\n+    \"\"\"Resolve a spoken/guessed app id against the live registry.\n \n-    Exact normalized match wins outright; otherwise substring containment\n-    either way (so 'kanban' finds 'kanban-board' and 'editor of markdown'\n-    still lands). Returns ALL candidates \u2014 the caller decides whether one\n-    match is unambiguous enough to retry with.\n+    Matches each app's id AND display name, normalized \u2014 the model often\n+    passes what an app is *called*, and ids drift from names over time\n+    ('Text Editor' registers as 'text-viewer'). Exact normalized match on\n+    either wins outright; otherwise substring containment either way (so\n+    'kanban' finds 'kanban-board'). Returns ALL candidate ids \u2014 the caller\n+    decides whether one match is unambiguous enough to retry with.\n     \"\"\"\n     want = _normalize_app_id(requested)\n     if not want:\n         return []\n-    exact = [a for a in available if _normalize_app_id(a) == want]\n-    if exact:\n-        return exact\n-    return [\n-        a\n-        for a in available\n-        if want in _normalize_app_id(a) or _normalize_app_id(a) in want\n-    ]\n+    exact: list[str] = []\n+    partial: list[str] = []\n+    for app in apps:\n+        app_id = app.get(\"id\")\n+        if not isinstance(app_id, str) or not app_id:\n+            continue\n+        keys = [_normalize_app_id(app_id)]\n+        name = app.get(\"name\")\n+        if isinstance(name, str):\n+            keys.append(_normalize_app_id(name))\n+        keys = [k for k in keys if k]\n+        if any(k == want for k in keys):\n+            exact.append(app_id)\n+        elif any(want in k or k in want for k in keys):\n+            partial.append(app_id)\n+    return exact if exact else partial\n+\n+\n+async def _registry_apps() -> list[dict[str, Any]]:\n+    \"\"\"Fetch the live registry ({id, name} dicts) for failure-path resolution.\"\"\"\n+    try:\n+        response = await mesh_invoke(\"viewer_desktop.list_apps\", {})\n+    except MeshUnavailable:\n+        return []\n+    return [a for a in (response.get(\"apps\") or []) if isinstance(a, dict)]\n \n \n async def _open_app(app_id: str, title: str) -> dict[str, Any]:\n     app_id = (app_id or \"\").strip()\n     if not app_id:\n-        return {\"error\": \"bad_app_id\", \"detail\": \"app_id is required\"}\n+        # Even an argument error answers 'what CAN I open' \u2014 every\n+        # open_app failure carries the valid ids so the model recovers\n+        # on the next call instead of declaring defeat.\n+        apps = await _registry_apps()\n+        return {\n+            \"ok\": False,\n+            \"error\": \"bad_app_id\",\n+            \"detail\": \"app_id is required\",\n+            \"available_apps\": [a[\"id\"] for a in apps if a.get(\"id\")] or None,\n+        }\n \n     async def attempt(target_id: str) -> dict[str, Any]:\n         payload: dict[str, Any] = {\"appId\": target_id}\n",
+   "gold_lines": 58,
+   "FAIL_TO_PASS": [
+    "tests/test_viewer_tool_resolution.py::test_fuzzy_exact_id_still_wins",
+    "tests/test_viewer_tool_resolution.py::test_fuzzy_matches_display_name_when_id_drifted",
+    "tests/test_viewer_tool_resolution.py::test_fuzzy_no_match_returns_empty",
+    "tests/test_viewer_tool_resolution.py::test_fuzzy_substring_containment_on_ids",
+    "tests/test_viewer_tool_resolution.py::test_fuzzy_tolerates_nameless_entries",
+    "tests/test_viewer_tool_resolution.py::test_open_app_empty_id_still_lists_apps"
+   ],
+   "test_patch": "diff --git a/daemons/raven-core/tests/test_viewer_tool_resolution.py b/daemons/raven-core/tests/test_viewer_tool_resolution.py\nnew file mode 100644\nindex 0000000..bc58853\n--- /dev/null\n+++ b/daemons/raven-core/tests/test_viewer_tool_resolution.py\n@@ -0,0 +1,167 @@\n+\"\"\"App-id resolution semantics for the viewer tool (#243): name-aware\n+fuzzy matching ('text editor' must find id 'text-viewer'), the `id`\n+alias for open_app's app_id argument, failure results that always carry\n+the valid ids, and an anti-drift gate pinning APP_HINTS to the shell's\n+live app registry source.\n+\n+The mesh hop is mocked (patch viewer_tool.mesh_invoke), so these run\n+without a live mesh.\n+\"\"\"\n+import asyncio\n+import re\n+import sys\n+import unittest.mock as mock\n+from pathlib import Path\n+\n+sys.path.insert(0, str(Path(__file__).parent.parent))\n+\n+# Same global mock test_tool_registry.py uses: importing raven_core.tools\n+# (the package __init__) pulls session_context's deep import chain.\n+if \"raven_core.session_context\" not in sys.modules:\n+    sys.modules[\"raven_core.session_context\"] = mock.MagicMock()\n+\n+import pytest\n+\n+import raven_core.tools.viewer_tool as vt\n+\n+REGISTRY = [\n+    {\"id\": \"browser\", \"name\": \"Browser\"},\n+    {\"id\": \"kanban-board\", \"name\": \"Kanban\"},\n+    {\"id\": \"markdown-viewer\", \"name\": \"Markdown Editor\"},\n+    {\"id\": \"text-viewer\", \"name\": \"Text Editor\"},\n+    {\"id\": \"terminal\", \"name\": \"Terminal\"},\n+]\n+REGISTRY_IDS = [a[\"id\"] for a in REGISTRY]\n+\n+\n+# ---------------------------------------------------------------- fuzzy match\n+\n+def test_fuzzy_matches_display_name_when_id_drifted():\n+    # The drift that kept #243 alive: apps NAMED 'Markdown Editor' /\n+    # 'Text Editor' register under -viewer ids.\n+    assert vt._fuzzy_match_app(\"text-editor\", REGISTRY) == [\"text-viewer\"]\n+    assert vt._fuzzy_match_app(\"markdown editor\", REGISTRY) == [\"markdown-viewer\"]\n+\n+\n+def test_fuzzy_exact_id_still_wins():\n+    assert vt._fuzzy_match_app(\"kanban-board\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_substring_containment_on_ids():\n+    assert vt._fuzzy_match_app(\"kanban\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_no_match_returns_empty():\n+    assert vt._fuzzy_match_app(\"flux-capacitor\", REGISTRY) == []\n+    assert vt._fuzzy_match_app(\"\", REGISTRY) == []\n+\n+\n+def test_fuzzy_tolerates_nameless_entries():\n+    # The fallback path wraps bare ids as {'id': ...} dicts with no name.\n+    assert vt._fuzzy_match_app(\"text viewer\", [{\"id\": \"text-viewer\"}]) == [\n+        \"text-viewer\"\n+    ]\n+\n+\n+# ------------------------------------------------------------------ open_app\n+\n+def _mesh(responses):\n+    \"\"\"Mock mesh_invoke returning queued responses per surface.\"\"\"\n+\n+    async def invoke(surface, payload):\n+        handler = responses[surface]\n+        return handler.pop(0) if isinstance(handler, list) else handler\n+\n+    return invoke\n+\n+\n+def test_open_app_resolves_name_and_retries_once():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    hit = {\"ok\": True, \"windowId\": \"w1\"}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss, hit],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"text editor\", \"\"))\n+    assert result == {\n+        \"ok\": True,\n+        \"app_id\": \"text-viewer\",\n+        \"resolved_from\": \"text editor\",\n+        \"window_id\": \"w1\",\n+    }\n+\n+\n+def test_open_app_unknown_id_returns_available_apps():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"flux-capacitor\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"unknown_app\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+    assert result[\"did_you_mean\"] is None\n+\n+\n+def test_open_app_falls_back_to_bare_ids_when_registry_read_fails():\n+    queue = [\n+        {\"ok\": False, \"available\": REGISTRY_IDS},\n+        {\"ok\": True, \"windowId\": \"w2\"},\n+    ]\n+\n+    async def invoke(surface, payload):\n+        if surface == \"viewer_desktop.list_apps\":\n+            raise vt.MeshUnavailable(\"down\")\n+        return queue.pop(0)\n+\n+    with mock.patch.object(vt, \"mesh_invoke\", invoke):\n+        result = asyncio.run(vt._open_app(\"kanban\", \"\"))\n+    assert result[\"ok\"] is True\n+    assert result[\"app_id\"] == \"kanban-board\"\n+\n+\n+def test_open_app_empty_id_still_lists_apps():\n+    responses = {\"viewer_desktop.list_apps\": {\"apps\": REGISTRY}}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"bad_app_id\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+\n+\n+def test_handle_call_accepts_id_alias():\n+    # Older prompt examples taught open_app({ id: ... }); the handler\n+    # must not dead-end on the alias.\n+    hit = {\"ok\": True, \"windowId\": \"w3\"}\n+    responses = {\"viewer_desktop.open_app\": [hit]}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt.handle_call_async(\"open_app\", {\"id\": \"browser\"}))\n+    assert result == {\"ok\": True, \"app_id\": \"browser\", \"window_id\": \"w3\"}\n+\n+\n+# ----------------------------------------------------------------- anti-drift\n+\n+def _shell_registry_ids():\n+    \"\"\"Extract registered app ids from the shell's auto-glob source.\"\"\"\n+    apps_dir = Path(__file__).resolve().parents[3] / \"shell\" / \"src\" / \"apps\"\n+    if not apps_dir.is_dir():\n+        pytest.skip(\"shell/src/apps not present in this checkout\")\n+    ids = set()\n+    for index in apps_dir.glob(\"*/index.ts\"):\n+        m = re.search(r\"id:\\s*['\\\"]([^'\\\"]+)['\\\"]\", index.read_text())\n+        if m:\n+            ids.add(m.group(1))\n+    return ids\n+\n+\n+def test_app_hints_exist_in_shell_registry():\n+    # APP_HINTS is deliberately a non-load-bearing subset, but every\n+    # entry must be a VERBATIM registry id \u2014 'markdown-editor' /\n+    # 'text-editor' drifted dead once (#243) and the model dutifully\n+    # passed them.\n+    registry = _shell_registry_ids()\n+    stale = set(vt.APP_HINTS) - registry\n+    assert not stale, f\"APP_HINTS entries missing from shell registry: {stale}\"\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_report_gap_gate.py::test_auto_file_files_on_first_call",
+    "tests/test_report_gap_gate.py::test_confirmed_allowed_past_limit",
+    "tests/test_report_gap_gate.py::test_confirmed_files_full_contract_payload",
+    "tests/test_report_gap_gate.py::test_declaration_carries_contract_params",
+    "tests/test_report_gap_gate.py::test_deduped_does_not_hide_ok",
+    "tests/test_report_gap_gate.py::test_mesh_unavailable_does_not_count",
+    "tests/test_report_gap_gate.py::test_missing_area_or_summary_errors",
+    "tests/test_report_gap_gate.py::test_no_config_defaults_to_confirmation_gate",
+    "tests/test_report_gap_gate.py::test_no_token_deny_is_named",
+    "tests/test_report_gap_gate.py::test_rate_guard_suspends_auto_file",
+    "tests/test_report_gap_gate.py::test_review_gaps_no_token_is_error_not_empty_board",
+    "tests/test_report_gap_gate.py::test_review_gaps_passes_stale_through",
+    "tests/test_report_gap_gate.py::test_review_gaps_reads_gap_labeled_board",
+    "tests/test_report_gap_gate.py::test_session_id_reminted_on_reset",
+    "tests/test_report_gap_gate.py::test_unconfirmed_returns_pending_and_files_nothing",
+    "tests/test_report_gap_gate.py::test_utterance_falls_back_to_summary",
+    "tests/test_tool_registry.py::test_all_modules_have_required_exports",
+    "tests/test_tool_registry.py::test_get_all_tool_declarations_returns_tools",
+    "tests/test_tool_registry.py::test_get_registered_functions_returns_function_names",
+    "tests/test_tool_registry.py::test_registry_discovers_expected_modules",
+    "tests/test_tool_registry.py::test_registry_excludes_disabled_modules",
+    "tests/test_tool_registry.py::test_registry_order_is_stable"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "aether__a1c0101-2",
+   "repo": "aether",
+   "commit": "a1c010106da9d8dd59c581e448f2d6e786eed539",
+   "base_commit": "99cbf5a6c6de80ddcd88e821e3f6f80763492c5d",
+   "commit_date": "2026-06-11",
+   "commit_subject": "fix(raven): resolve app display names and id drift in voice open_app (#307)",
+   "bundled": true,
+   "gold_hunks": [
+    5
+   ],
+   "gold_files": [
+    "daemons/raven-core/raven_core/tools/viewer_tool.py"
+   ],
+   "gold_patch": "diff --git a/daemons/raven-core/raven_core/tools/viewer_tool.py b/daemons/raven-core/raven_core/tools/viewer_tool.py\nindex ce1be6e..cbf9ec5 100644\n--- a/daemons/raven-core/raven_core/tools/viewer_tool.py\n+++ b/daemons/raven-core/raven_core/tools/viewer_tool.py\n@@ -322,7 +360,10 @@ def get_tools() -> list[types.Tool]:\n async def handle_call_async(name: str, args: dict) -> dict[str, Any] | None:\n     \"\"\"Async tool handler \u2014 awaited by the tool registry.\"\"\"\n     if name == \"open_app\":\n-        return await _open_app(app_id=str(args.get(\"app_id\", \"\")), title=str(args.get(\"title\", \"\")))\n+        # Accept `id` as an alias for `app_id` \u2014 older prompt examples\n+        # taught `open_app({ id: ... })` and the model still emits it.\n+        raw_id = args.get(\"app_id\") or args.get(\"id\") or \"\"\n+        return await _open_app(app_id=str(raw_id), title=str(args.get(\"title\", \"\")))\n     if name == \"list_apps\":\n         return await _list_apps()\n     if name == \"list_windows\":\n",
+   "gold_lines": 5,
+   "FAIL_TO_PASS": [
+    "tests/test_viewer_tool_resolution.py::test_handle_call_accepts_id_alias"
+   ],
+   "test_patch": "diff --git a/daemons/raven-core/tests/test_viewer_tool_resolution.py b/daemons/raven-core/tests/test_viewer_tool_resolution.py\nnew file mode 100644\nindex 0000000..bc58853\n--- /dev/null\n+++ b/daemons/raven-core/tests/test_viewer_tool_resolution.py\n@@ -0,0 +1,167 @@\n+\"\"\"App-id resolution semantics for the viewer tool (#243): name-aware\n+fuzzy matching ('text editor' must find id 'text-viewer'), the `id`\n+alias for open_app's app_id argument, failure results that always carry\n+the valid ids, and an anti-drift gate pinning APP_HINTS to the shell's\n+live app registry source.\n+\n+The mesh hop is mocked (patch viewer_tool.mesh_invoke), so these run\n+without a live mesh.\n+\"\"\"\n+import asyncio\n+import re\n+import sys\n+import unittest.mock as mock\n+from pathlib import Path\n+\n+sys.path.insert(0, str(Path(__file__).parent.parent))\n+\n+# Same global mock test_tool_registry.py uses: importing raven_core.tools\n+# (the package __init__) pulls session_context's deep import chain.\n+if \"raven_core.session_context\" not in sys.modules:\n+    sys.modules[\"raven_core.session_context\"] = mock.MagicMock()\n+\n+import pytest\n+\n+import raven_core.tools.viewer_tool as vt\n+\n+REGISTRY = [\n+    {\"id\": \"browser\", \"name\": \"Browser\"},\n+    {\"id\": \"kanban-board\", \"name\": \"Kanban\"},\n+    {\"id\": \"markdown-viewer\", \"name\": \"Markdown Editor\"},\n+    {\"id\": \"text-viewer\", \"name\": \"Text Editor\"},\n+    {\"id\": \"terminal\", \"name\": \"Terminal\"},\n+]\n+REGISTRY_IDS = [a[\"id\"] for a in REGISTRY]\n+\n+\n+# ---------------------------------------------------------------- fuzzy match\n+\n+def test_fuzzy_matches_display_name_when_id_drifted():\n+    # The drift that kept #243 alive: apps NAMED 'Markdown Editor' /\n+    # 'Text Editor' register under -viewer ids.\n+    assert vt._fuzzy_match_app(\"text-editor\", REGISTRY) == [\"text-viewer\"]\n+    assert vt._fuzzy_match_app(\"markdown editor\", REGISTRY) == [\"markdown-viewer\"]\n+\n+\n+def test_fuzzy_exact_id_still_wins():\n+    assert vt._fuzzy_match_app(\"kanban-board\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_substring_containment_on_ids():\n+    assert vt._fuzzy_match_app(\"kanban\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_no_match_returns_empty():\n+    assert vt._fuzzy_match_app(\"flux-capacitor\", REGISTRY) == []\n+    assert vt._fuzzy_match_app(\"\", REGISTRY) == []\n+\n+\n+def test_fuzzy_tolerates_nameless_entries():\n+    # The fallback path wraps bare ids as {'id': ...} dicts with no name.\n+    assert vt._fuzzy_match_app(\"text viewer\", [{\"id\": \"text-viewer\"}]) == [\n+        \"text-viewer\"\n+    ]\n+\n+\n+# ------------------------------------------------------------------ open_app\n+\n+def _mesh(responses):\n+    \"\"\"Mock mesh_invoke returning queued responses per surface.\"\"\"\n+\n+    async def invoke(surface, payload):\n+        handler = responses[surface]\n+        return handler.pop(0) if isinstance(handler, list) else handler\n+\n+    return invoke\n+\n+\n+def test_open_app_resolves_name_and_retries_once():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    hit = {\"ok\": True, \"windowId\": \"w1\"}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss, hit],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"text editor\", \"\"))\n+    assert result == {\n+        \"ok\": True,\n+        \"app_id\": \"text-viewer\",\n+        \"resolved_from\": \"text editor\",\n+        \"window_id\": \"w1\",\n+    }\n+\n+\n+def test_open_app_unknown_id_returns_available_apps():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"flux-capacitor\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"unknown_app\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+    assert result[\"did_you_mean\"] is None\n+\n+\n+def test_open_app_falls_back_to_bare_ids_when_registry_read_fails():\n+    queue = [\n+        {\"ok\": False, \"available\": REGISTRY_IDS},\n+        {\"ok\": True, \"windowId\": \"w2\"},\n+    ]\n+\n+    async def invoke(surface, payload):\n+        if surface == \"viewer_desktop.list_apps\":\n+            raise vt.MeshUnavailable(\"down\")\n+        return queue.pop(0)\n+\n+    with mock.patch.object(vt, \"mesh_invoke\", invoke):\n+        result = asyncio.run(vt._open_app(\"kanban\", \"\"))\n+    assert result[\"ok\"] is True\n+    assert result[\"app_id\"] == \"kanban-board\"\n+\n+\n+def test_open_app_empty_id_still_lists_apps():\n+    responses = {\"viewer_desktop.list_apps\": {\"apps\": REGISTRY}}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"bad_app_id\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+\n+\n+def test_handle_call_accepts_id_alias():\n+    # Older prompt examples taught open_app({ id: ... }); the handler\n+    # must not dead-end on the alias.\n+    hit = {\"ok\": True, \"windowId\": \"w3\"}\n+    responses = {\"viewer_desktop.open_app\": [hit]}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt.handle_call_async(\"open_app\", {\"id\": \"browser\"}))\n+    assert result == {\"ok\": True, \"app_id\": \"browser\", \"window_id\": \"w3\"}\n+\n+\n+# ----------------------------------------------------------------- anti-drift\n+\n+def _shell_registry_ids():\n+    \"\"\"Extract registered app ids from the shell's auto-glob source.\"\"\"\n+    apps_dir = Path(__file__).resolve().parents[3] / \"shell\" / \"src\" / \"apps\"\n+    if not apps_dir.is_dir():\n+        pytest.skip(\"shell/src/apps not present in this checkout\")\n+    ids = set()\n+    for index in apps_dir.glob(\"*/index.ts\"):\n+        m = re.search(r\"id:\\s*['\\\"]([^'\\\"]+)['\\\"]\", index.read_text())\n+        if m:\n+            ids.add(m.group(1))\n+    return ids\n+\n+\n+def test_app_hints_exist_in_shell_registry():\n+    # APP_HINTS is deliberately a non-load-bearing subset, but every\n+    # entry must be a VERBATIM registry id \u2014 'markdown-editor' /\n+    # 'text-editor' drifted dead once (#243) and the model dutifully\n+    # passed them.\n+    registry = _shell_registry_ids()\n+    stale = set(vt.APP_HINTS) - registry\n+    assert not stale, f\"APP_HINTS entries missing from shell registry: {stale}\"\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_report_gap_gate.py::test_auto_file_files_on_first_call",
+    "tests/test_report_gap_gate.py::test_confirmed_allowed_past_limit",
+    "tests/test_report_gap_gate.py::test_confirmed_files_full_contract_payload",
+    "tests/test_report_gap_gate.py::test_declaration_carries_contract_params",
+    "tests/test_report_gap_gate.py::test_deduped_does_not_hide_ok",
+    "tests/test_report_gap_gate.py::test_mesh_unavailable_does_not_count",
+    "tests/test_report_gap_gate.py::test_missing_area_or_summary_errors",
+    "tests/test_report_gap_gate.py::test_no_config_defaults_to_confirmation_gate",
+    "tests/test_report_gap_gate.py::test_no_token_deny_is_named",
+    "tests/test_report_gap_gate.py::test_rate_guard_suspends_auto_file",
+    "tests/test_report_gap_gate.py::test_review_gaps_no_token_is_error_not_empty_board",
+    "tests/test_report_gap_gate.py::test_review_gaps_passes_stale_through",
+    "tests/test_report_gap_gate.py::test_review_gaps_reads_gap_labeled_board",
+    "tests/test_report_gap_gate.py::test_session_id_reminted_on_reset",
+    "tests/test_report_gap_gate.py::test_unconfirmed_returns_pending_and_files_nothing",
+    "tests/test_report_gap_gate.py::test_utterance_falls_back_to_summary",
+    "tests/test_tool_registry.py::test_all_modules_have_required_exports",
+    "tests/test_tool_registry.py::test_get_all_tool_declarations_returns_tools",
+    "tests/test_tool_registry.py::test_get_registered_functions_returns_function_names",
+    "tests/test_tool_registry.py::test_registry_discovers_expected_modules",
+    "tests/test_tool_registry.py::test_registry_excludes_disabled_modules",
+    "tests/test_tool_registry.py::test_registry_order_is_stable"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "aether__a1c0101-3",
+   "repo": "aether",
+   "commit": "a1c010106da9d8dd59c581e448f2d6e786eed539",
+   "base_commit": "99cbf5a6c6de80ddcd88e821e3f6f80763492c5d",
+   "commit_date": "2026-06-11",
+   "commit_subject": "fix(raven): resolve app display names and id drift in voice open_app (#307)",
+   "bundled": true,
+   "gold_hunks": [
+    2,
+    3
+   ],
+   "gold_files": [
+    "daemons/raven-core/raven_core/tools/viewer_tool.py"
+   ],
+   "gold_patch": "diff --git a/daemons/raven-core/raven_core/tools/viewer_tool.py b/daemons/raven-core/raven_core/tools/viewer_tool.py\nindex ce1be6e..cbf9ec5 100644\n--- a/daemons/raven-core/raven_core/tools/viewer_tool.py\n+++ b/daemons/raven-core/raven_core/tools/viewer_tool.py\n@@ -55,31 +58,59 @@ def _normalize_app_id(s: str) -> str:\n     return \"\".join(c for c in s.lower() if c.isalnum())\n \n \n-def _fuzzy_match_app(requested: str, available: list[str]) -> list[str]:\n-    \"\"\"Resolve a spoken/guessed app id against the live registry ids.\n+def _fuzzy_match_app(requested: str, apps: list[dict[str, Any]]) -> list[str]:\n+    \"\"\"Resolve a spoken/guessed app id against the live registry.\n \n-    Exact normalized match wins outright; otherwise substring containment\n-    either way (so 'kanban' finds 'kanban-board' and 'editor of markdown'\n-    still lands). Returns ALL candidates \u2014 the caller decides whether one\n-    match is unambiguous enough to retry with.\n+    Matches each app's id AND display name, normalized \u2014 the model often\n+    passes what an app is *called*, and ids drift from names over time\n+    ('Text Editor' registers as 'text-viewer'). Exact normalized match on\n+    either wins outright; otherwise substring containment either way (so\n+    'kanban' finds 'kanban-board'). Returns ALL candidate ids \u2014 the caller\n+    decides whether one match is unambiguous enough to retry with.\n     \"\"\"\n     want = _normalize_app_id(requested)\n     if not want:\n         return []\n-    exact = [a for a in available if _normalize_app_id(a) == want]\n-    if exact:\n-        return exact\n-    return [\n-        a\n-        for a in available\n-        if want in _normalize_app_id(a) or _normalize_app_id(a) in want\n-    ]\n+    exact: list[str] = []\n+    partial: list[str] = []\n+    for app in apps:\n+        app_id = app.get(\"id\")\n+        if not isinstance(app_id, str) or not app_id:\n+            continue\n+        keys = [_normalize_app_id(app_id)]\n+        name = app.get(\"name\")\n+        if isinstance(name, str):\n+            keys.append(_normalize_app_id(name))\n+        keys = [k for k in keys if k]\n+        if any(k == want for k in keys):\n+            exact.append(app_id)\n+        elif any(want in k or k in want for k in keys):\n+            partial.append(app_id)\n+    return exact if exact else partial\n+\n+\n+async def _registry_apps() -> list[dict[str, Any]]:\n+    \"\"\"Fetch the live registry ({id, name} dicts) for failure-path resolution.\"\"\"\n+    try:\n+        response = await mesh_invoke(\"viewer_desktop.list_apps\", {})\n+    except MeshUnavailable:\n+        return []\n+    return [a for a in (response.get(\"apps\") or []) if isinstance(a, dict)]\n \n \n async def _open_app(app_id: str, title: str) -> dict[str, Any]:\n     app_id = (app_id or \"\").strip()\n     if not app_id:\n-        return {\"error\": \"bad_app_id\", \"detail\": \"app_id is required\"}\n+        # Even an argument error answers 'what CAN I open' \u2014 every\n+        # open_app failure carries the valid ids so the model recovers\n+        # on the next call instead of declaring defeat.\n+        apps = await _registry_apps()\n+        return {\n+            \"ok\": False,\n+            \"error\": \"bad_app_id\",\n+            \"detail\": \"app_id is required\",\n+            \"available_apps\": [a[\"id\"] for a in apps if a.get(\"id\")] or None,\n+        }\n \n     async def attempt(target_id: str) -> dict[str, Any]:\n         payload: dict[str, Any] = {\"appId\": target_id}\n@@ -92,11 +123,17 @@ async def _open_app(app_id: str, title: str) -> dict[str, Any]:\n         # Unknown id: the viewer node returns ok:false with the live\n         # registry ids. Fuzzy-resolve and retry once before giving up \u2014\n         # the model says 'kanban', the registry says 'kanban-board'.\n+        # Resolve against the registry WITH display names when we can\n+        # get it ('text editor' must find id 'text-viewer'); fall back\n+        # to the bare id list the failure already carries.\n         if not response.get(\"ok\", False) and isinstance(\n             response.get(\"available\"), list\n         ):\n             available = [a for a in response[\"available\"] if isinstance(a, str)]\n-            candidates = _fuzzy_match_app(app_id, available)\n+            apps = await _registry_apps()\n+            if not apps:\n+                apps = [{\"id\": a} for a in available]\n+            candidates = _fuzzy_match_app(app_id, apps)\n             if len(candidates) == 1 and candidates[0] != app_id:\n                 resolved = candidates[0]\n                 response = await attempt(resolved)\n",
+   "gold_lines": 66,
+   "FAIL_TO_PASS": [
+    "tests/test_viewer_tool_resolution.py::test_open_app_resolves_name_and_retries_once"
+   ],
+   "test_patch": "diff --git a/daemons/raven-core/tests/test_viewer_tool_resolution.py b/daemons/raven-core/tests/test_viewer_tool_resolution.py\nnew file mode 100644\nindex 0000000..bc58853\n--- /dev/null\n+++ b/daemons/raven-core/tests/test_viewer_tool_resolution.py\n@@ -0,0 +1,167 @@\n+\"\"\"App-id resolution semantics for the viewer tool (#243): name-aware\n+fuzzy matching ('text editor' must find id 'text-viewer'), the `id`\n+alias for open_app's app_id argument, failure results that always carry\n+the valid ids, and an anti-drift gate pinning APP_HINTS to the shell's\n+live app registry source.\n+\n+The mesh hop is mocked (patch viewer_tool.mesh_invoke), so these run\n+without a live mesh.\n+\"\"\"\n+import asyncio\n+import re\n+import sys\n+import unittest.mock as mock\n+from pathlib import Path\n+\n+sys.path.insert(0, str(Path(__file__).parent.parent))\n+\n+# Same global mock test_tool_registry.py uses: importing raven_core.tools\n+# (the package __init__) pulls session_context's deep import chain.\n+if \"raven_core.session_context\" not in sys.modules:\n+    sys.modules[\"raven_core.session_context\"] = mock.MagicMock()\n+\n+import pytest\n+\n+import raven_core.tools.viewer_tool as vt\n+\n+REGISTRY = [\n+    {\"id\": \"browser\", \"name\": \"Browser\"},\n+    {\"id\": \"kanban-board\", \"name\": \"Kanban\"},\n+    {\"id\": \"markdown-viewer\", \"name\": \"Markdown Editor\"},\n+    {\"id\": \"text-viewer\", \"name\": \"Text Editor\"},\n+    {\"id\": \"terminal\", \"name\": \"Terminal\"},\n+]\n+REGISTRY_IDS = [a[\"id\"] for a in REGISTRY]\n+\n+\n+# ---------------------------------------------------------------- fuzzy match\n+\n+def test_fuzzy_matches_display_name_when_id_drifted():\n+    # The drift that kept #243 alive: apps NAMED 'Markdown Editor' /\n+    # 'Text Editor' register under -viewer ids.\n+    assert vt._fuzzy_match_app(\"text-editor\", REGISTRY) == [\"text-viewer\"]\n+    assert vt._fuzzy_match_app(\"markdown editor\", REGISTRY) == [\"markdown-viewer\"]\n+\n+\n+def test_fuzzy_exact_id_still_wins():\n+    assert vt._fuzzy_match_app(\"kanban-board\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_substring_containment_on_ids():\n+    assert vt._fuzzy_match_app(\"kanban\", REGISTRY) == [\"kanban-board\"]\n+\n+\n+def test_fuzzy_no_match_returns_empty():\n+    assert vt._fuzzy_match_app(\"flux-capacitor\", REGISTRY) == []\n+    assert vt._fuzzy_match_app(\"\", REGISTRY) == []\n+\n+\n+def test_fuzzy_tolerates_nameless_entries():\n+    # The fallback path wraps bare ids as {'id': ...} dicts with no name.\n+    assert vt._fuzzy_match_app(\"text viewer\", [{\"id\": \"text-viewer\"}]) == [\n+        \"text-viewer\"\n+    ]\n+\n+\n+# ------------------------------------------------------------------ open_app\n+\n+def _mesh(responses):\n+    \"\"\"Mock mesh_invoke returning queued responses per surface.\"\"\"\n+\n+    async def invoke(surface, payload):\n+        handler = responses[surface]\n+        return handler.pop(0) if isinstance(handler, list) else handler\n+\n+    return invoke\n+\n+\n+def test_open_app_resolves_name_and_retries_once():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    hit = {\"ok\": True, \"windowId\": \"w1\"}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss, hit],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"text editor\", \"\"))\n+    assert result == {\n+        \"ok\": True,\n+        \"app_id\": \"text-viewer\",\n+        \"resolved_from\": \"text editor\",\n+        \"window_id\": \"w1\",\n+    }\n+\n+\n+def test_open_app_unknown_id_returns_available_apps():\n+    miss = {\"ok\": False, \"available\": REGISTRY_IDS}\n+    responses = {\n+        \"viewer_desktop.open_app\": [miss],\n+        \"viewer_desktop.list_apps\": {\"apps\": REGISTRY},\n+    }\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"flux-capacitor\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"unknown_app\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+    assert result[\"did_you_mean\"] is None\n+\n+\n+def test_open_app_falls_back_to_bare_ids_when_registry_read_fails():\n+    queue = [\n+        {\"ok\": False, \"available\": REGISTRY_IDS},\n+        {\"ok\": True, \"windowId\": \"w2\"},\n+    ]\n+\n+    async def invoke(surface, payload):\n+        if surface == \"viewer_desktop.list_apps\":\n+            raise vt.MeshUnavailable(\"down\")\n+        return queue.pop(0)\n+\n+    with mock.patch.object(vt, \"mesh_invoke\", invoke):\n+        result = asyncio.run(vt._open_app(\"kanban\", \"\"))\n+    assert result[\"ok\"] is True\n+    assert result[\"app_id\"] == \"kanban-board\"\n+\n+\n+def test_open_app_empty_id_still_lists_apps():\n+    responses = {\"viewer_desktop.list_apps\": {\"apps\": REGISTRY}}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt._open_app(\"\", \"\"))\n+    assert result[\"ok\"] is False\n+    assert result[\"error\"] == \"bad_app_id\"\n+    assert result[\"available_apps\"] == REGISTRY_IDS\n+\n+\n+def test_handle_call_accepts_id_alias():\n+    # Older prompt examples taught open_app({ id: ... }); the handler\n+    # must not dead-end on the alias.\n+    hit = {\"ok\": True, \"windowId\": \"w3\"}\n+    responses = {\"viewer_desktop.open_app\": [hit]}\n+    with mock.patch.object(vt, \"mesh_invoke\", _mesh(responses)):\n+        result = asyncio.run(vt.handle_call_async(\"open_app\", {\"id\": \"browser\"}))\n+    assert result == {\"ok\": True, \"app_id\": \"browser\", \"window_id\": \"w3\"}\n+\n+\n+# ----------------------------------------------------------------- anti-drift\n+\n+def _shell_registry_ids():\n+    \"\"\"Extract registered app ids from the shell's auto-glob source.\"\"\"\n+    apps_dir = Path(__file__).resolve().parents[3] / \"shell\" / \"src\" / \"apps\"\n+    if not apps_dir.is_dir():\n+        pytest.skip(\"shell/src/apps not present in this checkout\")\n+    ids = set()\n+    for index in apps_dir.glob(\"*/index.ts\"):\n+        m = re.search(r\"id:\\s*['\\\"]([^'\\\"]+)['\\\"]\", index.read_text())\n+        if m:\n+            ids.add(m.group(1))\n+    return ids\n+\n+\n+def test_app_hints_exist_in_shell_registry():\n+    # APP_HINTS is deliberately a non-load-bearing subset, but every\n+    # entry must be a VERBATIM registry id \u2014 'markdown-editor' /\n+    # 'text-editor' drifted dead once (#243) and the model dutifully\n+    # passed them.\n+    registry = _shell_registry_ids()\n+    stale = set(vt.APP_HINTS) - registry\n+    assert not stale, f\"APP_HINTS entries missing from shell registry: {stale}\"\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_report_gap_gate.py::test_auto_file_files_on_first_call",
+    "tests/test_report_gap_gate.py::test_confirmed_allowed_past_limit",
+    "tests/test_report_gap_gate.py::test_confirmed_files_full_contract_payload",
+    "tests/test_report_gap_gate.py::test_declaration_carries_contract_params",
+    "tests/test_report_gap_gate.py::test_deduped_does_not_hide_ok",
+    "tests/test_report_gap_gate.py::test_mesh_unavailable_does_not_count",
+    "tests/test_report_gap_gate.py::test_missing_area_or_summary_errors",
+    "tests/test_report_gap_gate.py::test_no_config_defaults_to_confirmation_gate",
+    "tests/test_report_gap_gate.py::test_no_token_deny_is_named",
+    "tests/test_report_gap_gate.py::test_rate_guard_suspends_auto_file",
+    "tests/test_report_gap_gate.py::test_review_gaps_no_token_is_error_not_empty_board",
+    "tests/test_report_gap_gate.py::test_review_gaps_passes_stale_through",
+    "tests/test_report_gap_gate.py::test_review_gaps_reads_gap_labeled_board",
+    "tests/test_report_gap_gate.py::test_session_id_reminted_on_reset",
+    "tests/test_report_gap_gate.py::test_unconfirmed_returns_pending_and_files_nothing",
+    "tests/test_report_gap_gate.py::test_utterance_falls_back_to_summary",
+    "tests/test_tool_registry.py::test_all_modules_have_required_exports",
+    "tests/test_tool_registry.py::test_get_all_tool_declarations_returns_tools",
+    "tests/test_tool_registry.py::test_get_registered_functions_returns_function_names",
+    "tests/test_tool_registry.py::test_registry_discovers_expected_modules",
+    "tests/test_tool_registry.py::test_registry_excludes_disabled_modules",
+    "tests/test_tool_registry.py::test_registry_order_is_stable"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  }
+ ]
+}

@@ -1,0 +1,48 @@
+{
+ "repo": "serverless-lakehouse",
+ "commit": "ede3c635aae32328e7b6b2afeb60395856c92090",
+ "base_commit": "26ec77da902993e58d69226caa109bd5748b546a",
+ "subject": "Third-audit fixes: pin worker Python, UTC strings out of Spark, zero-row ingests are ingests",
+ "date": "2026-10-02",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "lakehouse/bronze.py",
+   "lines": 16
+  },
+  {
+   "i": 1,
+   "path": "lakehouse/dashboard.py",
+   "lines": 2
+  },
+  {
+   "i": 2,
+   "path": "lakehouse/dashboard.py",
+   "lines": 3
+  },
+  {
+   "i": 3,
+   "path": "lakehouse/report.py",
+   "lines": 2
+  },
+  {
+   "i": 4,
+   "path": "lakehouse/report.py",
+   "lines": 2
+  },
+  {
+   "i": 5,
+   "path": "lakehouse/spark.py",
+   "lines": 12
+  },
+  {
+   "i": 6,
+   "path": "lakehouse/spark.py",
+   "lines": 13
+  }
+ ],
+ "new_tests": [],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": []
+}

@@ -1,0 +1,346 @@
+{
+ "repo": "serverless-lakehouse",
+ "commit": "6bc9dd976a608ea870e133046aa880af63abdc60",
+ "base_commit": "ede3c635aae32328e7b6b2afeb60395856c92090",
+ "subject": "Fourth-audit fixes",
+ "date": "2026-10-02",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": ".githooks/pre-commit",
+   "lines": 9
+  },
+  {
+   "i": 1,
+   "path": "Makefile",
+   "lines": 2
+  },
+  {
+   "i": 2,
+   "path": "Makefile",
+   "lines": 4
+  },
+  {
+   "i": 3,
+   "path": "Makefile",
+   "lines": 5
+  },
+  {
+   "i": 4,
+   "path": "lakehouse/bronze.py",
+   "lines": 9
+  },
+  {
+   "i": 5,
+   "path": "lakehouse/bronze.py",
+   "lines": 17
+  },
+  {
+   "i": 6,
+   "path": "lakehouse/bronze.py",
+   "lines": 4
+  },
+  {
+   "i": 7,
+   "path": "lakehouse/dashboard.py",
+   "lines": 12
+  },
+  {
+   "i": 8,
+   "path": "lakehouse/gold.py",
+   "lines": 14
+  },
+  {
+   "i": 9,
+   "path": "lakehouse/gold.py",
+   "lines": 8
+  },
+  {
+   "i": 10,
+   "path": "lakehouse/gold.py",
+   "lines": 32
+  },
+  {
+   "i": 11,
+   "path": "lakehouse/gold.py",
+   "lines": 5
+  },
+  {
+   "i": 12,
+   "path": "lakehouse/gold.py",
+   "lines": 5
+  },
+  {
+   "i": 13,
+   "path": "lakehouse/gold.py",
+   "lines": 6
+  },
+  {
+   "i": 14,
+   "path": "lakehouse/gold.py",
+   "lines": 3
+  },
+  {
+   "i": 15,
+   "path": "lakehouse/redact.py",
+   "lines": 20
+  },
+  {
+   "i": 16,
+   "path": "lakehouse/report.py",
+   "lines": 20
+  },
+  {
+   "i": 17,
+   "path": "lakehouse/report.py",
+   "lines": 6
+  },
+  {
+   "i": 18,
+   "path": "lakehouse/report.py",
+   "lines": 10
+  },
+  {
+   "i": 19,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 20,
+   "path": "lakehouse/silver.py",
+   "lines": 6
+  },
+  {
+   "i": 21,
+   "path": "lakehouse/silver.py",
+   "lines": 1
+  },
+  {
+   "i": 22,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 23,
+   "path": "lakehouse/silver.py",
+   "lines": 2
+  },
+  {
+   "i": 24,
+   "path": "lakehouse/silver.py",
+   "lines": 3
+  },
+  {
+   "i": 25,
+   "path": "lakehouse/silver.py",
+   "lines": 1
+  },
+  {
+   "i": 26,
+   "path": "lakehouse/silver.py",
+   "lines": 27
+  },
+  {
+   "i": 27,
+   "path": "lakehouse/silver.py",
+   "lines": 1
+  },
+  {
+   "i": 28,
+   "path": "lakehouse/spark.py",
+   "lines": 4
+  },
+  {
+   "i": 29,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 1
+  },
+  {
+   "i": 30,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 31,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 32,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 5
+  },
+  {
+   "i": 33,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 2
+  },
+  {
+   "i": 34,
+   "path": "lakehouse/templates/dashboard.html",
+   "lines": 4
+  },
+  {
+   "i": 35,
+   "path": "pytest.ini",
+   "lines": 2
+  },
+  {
+   "i": 36,
+   "path": "scripts/check_secrets.py",
+   "lines": 9
+  },
+  {
+   "i": 37,
+   "path": "scripts/check_secrets.py",
+   "lines": 35
+  },
+  {
+   "i": 38,
+   "path": "scripts/check_secrets.py",
+   "lines": 28
+  },
+  {
+   "i": 39,
+   "path": "space/app.py",
+   "lines": 4
+  },
+  {
+   "i": 40,
+   "path": "space/app.py",
+   "lines": 10
+  },
+  {
+   "i": 41,
+   "path": "space/app.py",
+   "lines": 9
+  },
+  {
+   "i": 42,
+   "path": "space/app.py",
+   "lines": 5
+  },
+  {
+   "i": 43,
+   "path": "space/app.py",
+   "lines": 11
+  },
+  {
+   "i": 44,
+   "path": "space/app.py",
+   "lines": 2
+  },
+  {
+   "i": 45,
+   "path": "space/app.py",
+   "lines": 2
+  },
+  {
+   "i": 46,
+   "path": "space/app.py",
+   "lines": 4
+  }
+ ],
+ "new_tests": [
+  "tests/test_redact.py::test_fourth_audit_shapes",
+  "tests/test_report_fmt.py::test_fmt_keeps_price_precision_and_drops_noise"
+ ],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": [
+  {
+   "task_id": "serverless-lakehouse__6bc9dd9-0",
+   "repo": "serverless-lakehouse",
+   "commit": "6bc9dd976a608ea870e133046aa880af63abdc60",
+   "base_commit": "ede3c635aae32328e7b6b2afeb60395856c92090",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Fourth-audit fixes",
+   "bundled": true,
+   "gold_hunks": [
+    15
+   ],
+   "gold_files": [
+    "lakehouse/redact.py"
+   ],
+   "gold_patch": "diff --git a/lakehouse/redact.py b/lakehouse/redact.py\nindex dca55b3..6949583 100644\n--- a/lakehouse/redact.py\n+++ b/lakehouse/redact.py\n@@ -27,14 +27,28 @@ PATTERNS: list[tuple[str, Pattern[str], str]] = [\n     (\"private_key\",   re.compile(r\"-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]*?-----END [A-Z ]*PRIVATE KEY-----\"), \"<redacted:private_key>\"),\n     (\"private_key_truncated\", re.compile(r\"-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]*\"), \"<redacted:private_key>\"),\n     (\"jwt\",           re.compile(r\"eyJ[A-Za-z0-9_-]{10,}\\.eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\"), \"<redacted:jwt>\"),\n+    (\"google_api_key\", re.compile(r\"AIza[0-9A-Za-z_\\-]{35}\"),                   \"<redacted:google_api_key>\"),\n+    (\"stripe_key\",    re.compile(r\"[sr]k_(?:live|test)_[A-Za-z0-9]{16,}\"),      \"<redacted:stripe_key>\"),\n+    (\"sendgrid_key\",  re.compile(r\"SG\\.[A-Za-z0-9_\\-]{16,}\\.[A-Za-z0-9_\\-]{16,}\"), \"<redacted:sendgrid_key>\"),\n+    (\"slack_webhook\", re.compile(r\"https://hooks\\.slack\\.com/services/T[A-Za-z0-9]+/B[A-Za-z0-9]+/[A-Za-z0-9]{16,}\"),\n+     \"<redacted:slack_webhook>\"),\n     (\"bearer\",        re.compile(r\"(?i)\\bbearer\\s+[A-Za-z0-9._+/=\\-]{20,}\"),    \"Bearer <redacted:bearer>\"),\n+    (\"basic_auth\",    re.compile(r\"(?i)\\bbasic\\s+[A-Za-z0-9+/=]{16,}\"),         \"Basic <redacted:basic_auth>\"),\n+    # user:password@ in a URL or connection string (postgres, redis, https with credentials); the user name is kept\n+    (\"url_password\",  re.compile(r\"(://[^:/\\s@'\\\"]+:)([^@\\s'\\\"]{6,})@\"),         r\"\\1<redacted:url_password>@\"),\n+    # ?key=\u2026 / &token=\u2026 / &api_key=\u2026 query parameters\n+    (\"query_secret\",  re.compile(r\"(?i)([?&](?:api[_-]?key|key|token|access[_-]?token|secret|password)=)([^&\\s'\\\"<]{8,})\"),\n+     r\"\\1<redacted:query_secret>\"),\n     # key=value and \"key\": \"value\" forms where the key name contains a secret-ish word \u2014 including compound names\n     # such as AWS_SECRET_ACCESS_KEY or OPENROUTER_API_KEY. Keeps the key, quotes and separator, drops the value.\n-    # The value class allows base64 (+ / =) and excludes '<' so already-redacted values don't re-match; a purely\n-    # numeric value is not a secret (\"first_token_s\": 2073169.405621416 is a timestamp).\n+    # The value runs to the next whitespace, quote, comma, semicolon, bracket or '<' (so already-redacted values\n+    # and a trailing `\",` are left alone) and must be 8+ chars, not purely numeric (\"prompt_tokens\": 53404 and\n+    # \"first_token_s\": 2073169.405621416 are counts and timestamps) and not a placeholder the source already wrote\n+    # (vLLM logs 'hf_token': 'hf_REDACTED'; runbooks write KEY=... or KEY=xxxx).\n     (\"kv_secret\",\n      re.compile(r\"(?i)([A-Za-z0-9_\\-]*(?:api[_-]?key|secret|token(?!izer)|password|passwd|authorization|credential)[A-Za-z0-9_\\-]*)\"\n-                r\"(['\\\"]?\\s*[:=]\\s*['\\\"]?)(?![0-9.]{16,}(?![A-Za-z0-9+/=_\\-]))([A-Za-z0-9+/=._\\-]{16,})\"),\n+                r\"(['\\\"]?\\s*[:=]\\s*['\\\"]?)(?![0-9.]+(?:[\\s'\\\"<>,;)\\]}]|$))\"\n+                r\"(?![^\\s'\\\"<>,;)\\]}]*(?:redacted|placeholder|\\.\\.\\.|\\*\\*\\*|xxxx|changeme|your[_-]?))([^\\s'\\\"<>,;)\\]}]{8,})\"),\n      r\"\\1\\2<redacted:kv_secret>\"),\n ]\n \n",
+   "gold_lines": 20,
+   "FAIL_TO_PASS": [
+    "tests/test_redact.py::test_fourth_audit_shapes"
+   ],
+   "test_patch": "diff --git a/tests/test_gold_boot_phases.py b/tests/test_gold_boot_phases.py\nnew file mode 100644\nindex 0000000..4dfe786\n--- /dev/null\n+++ b/tests/test_gold_boot_phases.py\n@@ -0,0 +1,90 @@\n+\"\"\"Boot segmentation in gold_worker_boot_phases, on a synthetic silver_worker_log_events frame.\n+\n+The fourth audit found the previous rule (\"a boot opens at `Starting vLLM:`\") merged two boots that shared one\n+wrapper line into a chimera row and dropped boots with no wrapper line at all. Starts a JVM, so marked slow.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import shutil\n+from datetime import datetime, timezone\n+\n+import pytest\n+\n+pytestmark = [pytest.mark.slow, pytest.mark.skipif(shutil.which(\"java\") is None, reason=\"needs a JVM\")]\n+\n+\n+def ts(minute: int, second: int = 0):\n+    return datetime(2026, 9, 23, 18, minute, second, tzinfo=timezone.utc).replace(tzinfo=None)\n+\n+\n+def ev(spark, rows):\n+    \"\"\"rows: (source_file, worker_id, line_no, minute, second, message).\"\"\"\n+    from pyspark.sql import types as T\n+    schema = T.StructType([T.StructField(\"source_file\", T.StringType()), T.StructField(\"worker_id\", T.StringType()),\n+                           T.StructField(\"line_no\", T.IntegerType()), T.StructField(\"ts_utc\", T.TimestampType()),\n+                           T.StructField(\"ts_format\", T.StringType()), T.StructField(\"event_kind\", T.StringType()),\n+                           T.StructField(\"message\", T.StringType())])\n+    return spark.createDataFrame([(f, w, n, ts(m, s), \"pipe\", \"vllm\", msg) for f, w, n, m, s, msg in rows], schema)\n+\n+\n+BOOT_LINES = [  # one complete boot, offsets in seconds from its first line\n+    (0, \"Starting vLLM: vllm serve --host 127.0.0.1\"),\n+    (45, \"Initializing a V1 LLM engine (v0.28.0) with config: model='qwen/qwen3-8b'\"),\n+    (90, \"Loading weights took 18.12 seconds\"),\n+    (150, \"Graph capturing finished in 6 secs, took 0.58 GiB\"),\n+    (160, \"Graph capturing finished in 7 secs, took 0.58 GiB\"),\n+    (165, \"init engine (profile, create kv cache, warmup model) took 56.34 s (compilation: 37.27 s)\"),\n+    (170, \"Application startup complete.\"),\n+]\n+\n+\n+def boot(file, worker, line0, minute0, lines=BOOT_LINES, skip_start=False):\n+    out = []\n+    for i, (off, msg) in enumerate(lines):\n+        if skip_start and msg.startswith(\"Starting vLLM:\"):\n+            continue\n+        out.append((file, worker, line0 + i, minute0 + off // 60, off % 60, msg))\n+    return out\n+\n+\n+@pytest.fixture(scope=\"module\")\n+def spark():\n+    from lakehouse.spark import get_spark\n+    s = get_spark(\"parquet\", app=\"test-boot-phases\")\n+    yield s\n+    s.stop()\n+\n+\n+def test_segmentation_opens_boots_at_wrapper_or_orphan_init_and_keeps_headless_boots(spark):\n+    from lakehouse.gold import worker_boot_phases\n+    rows = (\n+        boot(\"a.log\", \"w1\", 1, 0)                                   # ordinary boot: wrapper + init\n+        + boot(\"a.log\", \"w1\", 100, 10, skip_start=True)             # same worker, console missed the wrapper line \u2192 orphan init\n+        + boot(\"a.log\", \"w2\", 200, 20, skip_start=True)             # another worker interleaved, no wrapper line at all\n+        + boot(\"b.log\", None, 1, 30, lines=BOOT_LINES[2:])          # log starts mid-boot: no wrapper, no init\n+        + boot(\"c.log\", None, 1, 40) + boot(\"c.log\", None, 50, 50)  # two clean restarts in one log\n+    )\n+    out = {(r.source_file, r.worker_id or \"\", r.boot_index): r for r in worker_boot_phases(ev(spark, rows)).collect()}\n+    assert len(out) == 6, sorted(out)\n+\n+    a1, a2, a_w2 = out[(\"a.log\", \"w1\", 1)], out[(\"a.log\", \"w1\", 2)], out[(\"a.log\", \"w2\", 1)]\n+    assert a1.segmented_by.startswith(\"Starting vLLM\") and a1.start_to_api_ready_s == 170.0\n+    assert a2.segmented_by.startswith(\"Initializing\") and a2.t_start_vllm is None and a2.start_to_api_ready_s is None\n+    assert a_w2.segmented_by.startswith(\"Initializing\") and a_w2.weights_load_s == 18.12       # the dropped boot is back\n+    assert a1.init_engine_s == a2.init_engine_s == 56.34                                       # no borrowing between boots\n+\n+    b0 = out[(\"b.log\", \"\", 0)]\n+    assert b0.segmented_by.startswith(\"none\") and b0.torch_compile_s is None and b0.init_engine_s == 56.34\n+\n+    assert {k[2] for k in out if k[0] == \"c.log\"} == {1, 2}\n+    # graph capture is the sum of the passes, and the pass count is kept\n+    assert all(r.graph_capture_s == 13.0 and r.n_graph_passes == 2 for r in out.values())\n+\n+\n+def test_lines_before_the_first_boot_without_phases_are_not_a_boot(spark):\n+    from lakehouse.gold import worker_boot_phases\n+    rows = [(\"d.log\", None, 1, 0, 0, \"Registered model loader\"), (\"d.log\", None, 2, 0, 1, \"world_size=1 rank=0\")] \\\n+        + boot(\"d.log\", None, 3, 1)\n+    out = worker_boot_phases(ev(spark, rows)).collect()\n+    assert [r.boot_index for r in out] == [1]\ndiff --git a/tests/test_redact.py b/tests/test_redact.py\nindex a11aa82..d0d44e2 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -65,6 +65,32 @@ def test_private_key_block_is_removed_entirely():\n     assert hits2[\"private_key_truncated\"] == 1 and \"MIIE\" not in out2\n \n \n+def test_fourth_audit_shapes():\n+    \"\"\"Shapes the fourth audit showed passing through unchanged. Values are assembled at runtime so this file\n+    itself never contains a matchable secret for the pre-commit scan to flag.\"\"\"\n+    pw, kv, sep, at = \"pass\" + \"word\", \"SEC\" + \"RET\", \"=\", \"@\"\n+    cases = {\n+        \"Authorization: Basic \" + \"QWxhZGRpbjpvcGVuIHNlc2FtZQ==\": \"basic_auth\",\n+        f\"{pw} {sep} hunter2xx\": \"kv_secret\",                                     # short, non-base64 value\n+        f'DB_{pw.upper()}{sep}\"Tr0ub4dor&3!xyz\"': \"kv_secret\",                    # punctuation inside the value\n+        f\"{kv}{sep}{'a' * 8}!{'b' * 8}\": \"kv_secret\",                             # whole value, not up to the first '!'\n+        f\"postgres://admin:S3cret{'Pass'}{at}host/db\": \"url_password\",\n+        \"AIza\" + \"A\" * 35: \"google_api_key\",\n+        \"sk_live_\" + \"a\" * 24: \"stripe_key\",\n+        \"https://hooks.slack.com/services/T000/B000/\" + \"x\" * 24: \"slack_webhook\",\n+        \"SG.\" + \"a\" * 22 + \".\" + \"b\" * 43: \"sendgrid_key\",\n+        \"https://x.io/v1?\" + \"key\" + sep + \"abcdefgh1234&x=1\": \"query_secret\",\n+    }\n+    for text, name in cases.items():\n+        out, hits = redact(text)\n+        assert hits[name] == 1 and f\"<redacted:{name}>\" in out, text\n+    for benign in (\"'hf_token': 'hf_REDACTED'\",                          # placeholder vLLM itself logs\n+                   \"YOUR_API_KEY=your_api_key_here\", \"API_KEY=xxxxxxxxxxxx\", \"api_key: changeme-now\",\n+                   '\"workers_before\": \"{\\\\\"idle\\\\\": 1}\"'):\n+        assert find(benign) == [], benign\n+    assert redact(f\"{kv}{sep}{'a' * 8}!{'b' * 8}\")[0] == f\"{kv}{sep}<redacted:kv_secret>\"\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_report_fmt.py b/tests/test_report_fmt.py\nnew file mode 100644\nindex 0000000..ca89bbc\n--- /dev/null\n+++ b/tests/test_report_fmt.py\n@@ -0,0 +1,9 @@\n+from lakehouse.report import fmt\n+\n+\n+def test_fmt_keeps_price_precision_and_drops_noise():\n+    assert fmt(1.22) == \"1.22\" and fmt(0.69) == \"0.69\" and fmt(1.1) == \"1.1\"      # $/hr inputs print as written\n+    assert fmt(0.0052) == \"0.0052\" and fmt(0.149) == \"0.149\"                        # rates and $ per request\n+    assert fmt(147518.7) == \"147,519\" and fmt(17156) == \"17156\"                     # ms stay readable; ints untouched\n+    assert fmt(float(\"nan\")) == \"NaN\" and fmt(float(\"inf\")) == \"inf\" and fmt(None) == \"\"\n+    assert fmt(12.0) == \"12\" and fmt(26.862) == \"26.862\"\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_compound_key_names_and_base64_values",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator",
+    "tests/test_redact.py::test_more_token_shapes",
+    "tests/test_redact.py::test_private_key_block_is_removed_entirely",
+    "tests/test_seeds.py::test_coldstart_series",
+    "tests/test_seeds.py::test_evidence_file_present",
+    "tests/test_seeds.py::test_gpu_labels",
+    "tests/test_seeds.py::test_request_overrides",
+    "tests/test_seeds.py::test_run_notes"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "serverless-lakehouse__6bc9dd9-1",
+   "repo": "serverless-lakehouse",
+   "commit": "6bc9dd976a608ea870e133046aa880af63abdc60",
+   "base_commit": "ede3c635aae32328e7b6b2afeb60395856c92090",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Fourth-audit fixes",
+   "bundled": true,
+   "gold_hunks": [
+    17
+   ],
+   "gold_files": [
+    "lakehouse/report.py"
+   ],
+   "gold_patch": "diff --git a/lakehouse/report.py b/lakehouse/report.py\nindex 6b944b4..81298b4 100644\n--- a/lakehouse/report.py\n+++ b/lakehouse/report.py\n@@ -69,7 +75,11 @@ def fmt(v) -> str:\n             return \"NaN\"\n         if v == float(\"inf\"):\n             return \"inf\"\n-        return f\"{v:,.3f}\" if abs(v) < 1 else f\"{v:,.1f}\" if abs(v) < 1000 else f\"{v:,.0f}\"\n+        if abs(v) >= 1000:\n+            return f\"{v:,.0f}\"\n+        # up to 4 decimals under 1, 3 otherwise, trailing zeros dropped: a price of 1.22 prints as 1.22, not 1.2\n+        s = f\"{v:.4f}\" if abs(v) < 1 else f\"{v:.3f}\"\n+        return s.rstrip(\"0\").rstrip(\".\") if \".\" in s else s\n     if isinstance(v, datetime):\n         return v.strftime(\"%Y-%m-%d %H:%M:%S\")\n     if isinstance(v, (list, tuple)):\n",
+   "gold_lines": 6,
+   "FAIL_TO_PASS": [
+    "tests/test_report_fmt.py::test_fmt_keeps_price_precision_and_drops_noise"
+   ],
+   "test_patch": "diff --git a/tests/test_gold_boot_phases.py b/tests/test_gold_boot_phases.py\nnew file mode 100644\nindex 0000000..4dfe786\n--- /dev/null\n+++ b/tests/test_gold_boot_phases.py\n@@ -0,0 +1,90 @@\n+\"\"\"Boot segmentation in gold_worker_boot_phases, on a synthetic silver_worker_log_events frame.\n+\n+The fourth audit found the previous rule (\"a boot opens at `Starting vLLM:`\") merged two boots that shared one\n+wrapper line into a chimera row and dropped boots with no wrapper line at all. Starts a JVM, so marked slow.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import shutil\n+from datetime import datetime, timezone\n+\n+import pytest\n+\n+pytestmark = [pytest.mark.slow, pytest.mark.skipif(shutil.which(\"java\") is None, reason=\"needs a JVM\")]\n+\n+\n+def ts(minute: int, second: int = 0):\n+    return datetime(2026, 9, 23, 18, minute, second, tzinfo=timezone.utc).replace(tzinfo=None)\n+\n+\n+def ev(spark, rows):\n+    \"\"\"rows: (source_file, worker_id, line_no, minute, second, message).\"\"\"\n+    from pyspark.sql import types as T\n+    schema = T.StructType([T.StructField(\"source_file\", T.StringType()), T.StructField(\"worker_id\", T.StringType()),\n+                           T.StructField(\"line_no\", T.IntegerType()), T.StructField(\"ts_utc\", T.TimestampType()),\n+                           T.StructField(\"ts_format\", T.StringType()), T.StructField(\"event_kind\", T.StringType()),\n+                           T.StructField(\"message\", T.StringType())])\n+    return spark.createDataFrame([(f, w, n, ts(m, s), \"pipe\", \"vllm\", msg) for f, w, n, m, s, msg in rows], schema)\n+\n+\n+BOOT_LINES = [  # one complete boot, offsets in seconds from its first line\n+    (0, \"Starting vLLM: vllm serve --host 127.0.0.1\"),\n+    (45, \"Initializing a V1 LLM engine (v0.28.0) with config: model='qwen/qwen3-8b'\"),\n+    (90, \"Loading weights took 18.12 seconds\"),\n+    (150, \"Graph capturing finished in 6 secs, took 0.58 GiB\"),\n+    (160, \"Graph capturing finished in 7 secs, took 0.58 GiB\"),\n+    (165, \"init engine (profile, create kv cache, warmup model) took 56.34 s (compilation: 37.27 s)\"),\n+    (170, \"Application startup complete.\"),\n+]\n+\n+\n+def boot(file, worker, line0, minute0, lines=BOOT_LINES, skip_start=False):\n+    out = []\n+    for i, (off, msg) in enumerate(lines):\n+        if skip_start and msg.startswith(\"Starting vLLM:\"):\n+            continue\n+        out.append((file, worker, line0 + i, minute0 + off // 60, off % 60, msg))\n+    return out\n+\n+\n+@pytest.fixture(scope=\"module\")\n+def spark():\n+    from lakehouse.spark import get_spark\n+    s = get_spark(\"parquet\", app=\"test-boot-phases\")\n+    yield s\n+    s.stop()\n+\n+\n+def test_segmentation_opens_boots_at_wrapper_or_orphan_init_and_keeps_headless_boots(spark):\n+    from lakehouse.gold import worker_boot_phases\n+    rows = (\n+        boot(\"a.log\", \"w1\", 1, 0)                                   # ordinary boot: wrapper + init\n+        + boot(\"a.log\", \"w1\", 100, 10, skip_start=True)             # same worker, console missed the wrapper line \u2192 orphan init\n+        + boot(\"a.log\", \"w2\", 200, 20, skip_start=True)             # another worker interleaved, no wrapper line at all\n+        + boot(\"b.log\", None, 1, 30, lines=BOOT_LINES[2:])          # log starts mid-boot: no wrapper, no init\n+        + boot(\"c.log\", None, 1, 40) + boot(\"c.log\", None, 50, 50)  # two clean restarts in one log\n+    )\n+    out = {(r.source_file, r.worker_id or \"\", r.boot_index): r for r in worker_boot_phases(ev(spark, rows)).collect()}\n+    assert len(out) == 6, sorted(out)\n+\n+    a1, a2, a_w2 = out[(\"a.log\", \"w1\", 1)], out[(\"a.log\", \"w1\", 2)], out[(\"a.log\", \"w2\", 1)]\n+    assert a1.segmented_by.startswith(\"Starting vLLM\") and a1.start_to_api_ready_s == 170.0\n+    assert a2.segmented_by.startswith(\"Initializing\") and a2.t_start_vllm is None and a2.start_to_api_ready_s is None\n+    assert a_w2.segmented_by.startswith(\"Initializing\") and a_w2.weights_load_s == 18.12       # the dropped boot is back\n+    assert a1.init_engine_s == a2.init_engine_s == 56.34                                       # no borrowing between boots\n+\n+    b0 = out[(\"b.log\", \"\", 0)]\n+    assert b0.segmented_by.startswith(\"none\") and b0.torch_compile_s is None and b0.init_engine_s == 56.34\n+\n+    assert {k[2] for k in out if k[0] == \"c.log\"} == {1, 2}\n+    # graph capture is the sum of the passes, and the pass count is kept\n+    assert all(r.graph_capture_s == 13.0 and r.n_graph_passes == 2 for r in out.values())\n+\n+\n+def test_lines_before_the_first_boot_without_phases_are_not_a_boot(spark):\n+    from lakehouse.gold import worker_boot_phases\n+    rows = [(\"d.log\", None, 1, 0, 0, \"Registered model loader\"), (\"d.log\", None, 2, 0, 1, \"world_size=1 rank=0\")] \\\n+        + boot(\"d.log\", None, 3, 1)\n+    out = worker_boot_phases(ev(spark, rows)).collect()\n+    assert [r.boot_index for r in out] == [1]\ndiff --git a/tests/test_redact.py b/tests/test_redact.py\nindex a11aa82..d0d44e2 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -65,6 +65,32 @@ def test_private_key_block_is_removed_entirely():\n     assert hits2[\"private_key_truncated\"] == 1 and \"MIIE\" not in out2\n \n \n+def test_fourth_audit_shapes():\n+    \"\"\"Shapes the fourth audit showed passing through unchanged. Values are assembled at runtime so this file\n+    itself never contains a matchable secret for the pre-commit scan to flag.\"\"\"\n+    pw, kv, sep, at = \"pass\" + \"word\", \"SEC\" + \"RET\", \"=\", \"@\"\n+    cases = {\n+        \"Authorization: Basic \" + \"QWxhZGRpbjpvcGVuIHNlc2FtZQ==\": \"basic_auth\",\n+        f\"{pw} {sep} hunter2xx\": \"kv_secret\",                                     # short, non-base64 value\n+        f'DB_{pw.upper()}{sep}\"Tr0ub4dor&3!xyz\"': \"kv_secret\",                    # punctuation inside the value\n+        f\"{kv}{sep}{'a' * 8}!{'b' * 8}\": \"kv_secret\",                             # whole value, not up to the first '!'\n+        f\"postgres://admin:S3cret{'Pass'}{at}host/db\": \"url_password\",\n+        \"AIza\" + \"A\" * 35: \"google_api_key\",\n+        \"sk_live_\" + \"a\" * 24: \"stripe_key\",\n+        \"https://hooks.slack.com/services/T000/B000/\" + \"x\" * 24: \"slack_webhook\",\n+        \"SG.\" + \"a\" * 22 + \".\" + \"b\" * 43: \"sendgrid_key\",\n+        \"https://x.io/v1?\" + \"key\" + sep + \"abcdefgh1234&x=1\": \"query_secret\",\n+    }\n+    for text, name in cases.items():\n+        out, hits = redact(text)\n+        assert hits[name] == 1 and f\"<redacted:{name}>\" in out, text\n+    for benign in (\"'hf_token': 'hf_REDACTED'\",                          # placeholder vLLM itself logs\n+                   \"YOUR_API_KEY=your_api_key_here\", \"API_KEY=xxxxxxxxxxxx\", \"api_key: changeme-now\",\n+                   '\"workers_before\": \"{\\\\\"idle\\\\\": 1}\"'):\n+        assert find(benign) == [], benign\n+    assert redact(f\"{kv}{sep}{'a' * 8}!{'b' * 8}\")[0] == f\"{kv}{sep}<redacted:kv_secret>\"\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_report_fmt.py b/tests/test_report_fmt.py\nnew file mode 100644\nindex 0000000..ca89bbc\n--- /dev/null\n+++ b/tests/test_report_fmt.py\n@@ -0,0 +1,9 @@\n+from lakehouse.report import fmt\n+\n+\n+def test_fmt_keeps_price_precision_and_drops_noise():\n+    assert fmt(1.22) == \"1.22\" and fmt(0.69) == \"0.69\" and fmt(1.1) == \"1.1\"      # $/hr inputs print as written\n+    assert fmt(0.0052) == \"0.0052\" and fmt(0.149) == \"0.149\"                        # rates and $ per request\n+    assert fmt(147518.7) == \"147,519\" and fmt(17156) == \"17156\"                     # ms stay readable; ints untouched\n+    assert fmt(float(\"nan\")) == \"NaN\" and fmt(float(\"inf\")) == \"inf\" and fmt(None) == \"\"\n+    assert fmt(12.0) == \"12\" and fmt(26.862) == \"26.862\"\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_compound_key_names_and_base64_values",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator",
+    "tests/test_redact.py::test_more_token_shapes",
+    "tests/test_redact.py::test_private_key_block_is_removed_entirely",
+    "tests/test_seeds.py::test_coldstart_series",
+    "tests/test_seeds.py::test_evidence_file_present",
+    "tests/test_seeds.py::test_gpu_labels",
+    "tests/test_seeds.py::test_request_overrides",
+    "tests/test_seeds.py::test_run_notes"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  }
+ ]
+}

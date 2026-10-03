@@ -1,0 +1,167 @@
+{
+ "repo": "serverless-lakehouse",
+ "commit": "26ec77da902993e58d69226caa109bd5748b546a",
+ "base_commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+ "subject": "Re-audit fixes: per-request GPU override, whole-PEM redaction, per-table snapshot guard",
+ "date": "2026-10-02",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "lakehouse/config.py",
+   "lines": 1
+  },
+  {
+   "i": 1,
+   "path": "lakehouse/land.py",
+   "lines": 12
+  },
+  {
+   "i": 2,
+   "path": "lakehouse/redact.py",
+   "lines": 4
+  },
+  {
+   "i": 3,
+   "path": "lakehouse/silver.py",
+   "lines": 35
+  },
+  {
+   "i": 4,
+   "path": "lakehouse/silver.py",
+   "lines": 5
+  },
+  {
+   "i": 5,
+   "path": "lakehouse/silver.py",
+   "lines": 1
+  },
+  {
+   "i": 6,
+   "path": "lakehouse/silver.py",
+   "lines": 3
+  },
+  {
+   "i": 7,
+   "path": "lakehouse/silver.py",
+   "lines": 4
+  },
+  {
+   "i": 8,
+   "path": "lakehouse/silver.py",
+   "lines": 8
+  },
+  {
+   "i": 9,
+   "path": "lakehouse/silver.py",
+   "lines": 5
+  },
+  {
+   "i": 10,
+   "path": "lakehouse/silver.py",
+   "lines": 1
+  },
+  {
+   "i": 11,
+   "path": "seeds/coldstart_request_overrides.csv",
+   "lines": 4
+  }
+ ],
+ "new_tests": [
+  "tests/test_redact.py::test_private_key_block_is_removed_entirely",
+  "tests/test_seeds.py::test_request_overrides"
+ ],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": [
+  {
+   "task_id": "serverless-lakehouse__26ec77d-0",
+   "repo": "serverless-lakehouse",
+   "commit": "26ec77da902993e58d69226caa109bd5748b546a",
+   "base_commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Re-audit fixes: per-request GPU override, whole-PEM redaction, per-table snapshot guard",
+   "bundled": true,
+   "gold_hunks": [
+    2
+   ],
+   "gold_files": [
+    "lakehouse/redact.py"
+   ],
+   "gold_patch": "diff --git a/lakehouse/redact.py b/lakehouse/redact.py\nindex 644b67a..dca55b3 100644\n--- a/lakehouse/redact.py\n+++ b/lakehouse/redact.py\n@@ -23,7 +23,9 @@ PATTERNS: list[tuple[str, Pattern[str], str]] = [\n     (\"github_pat\",    re.compile(r\"github_pat_[A-Za-z0-9_]{20,}\"),              \"<redacted:github_pat>\"),   # fine-grained PATs\n     (\"aws_access_key\", re.compile(r\"(?:AKIA|ASIA)[0-9A-Z]{16}\"),                \"<redacted:aws_access_key>\"),\n     (\"slack_token\",   re.compile(r\"xox[abprs]-[A-Za-z0-9-]{10,}\"),             \"<redacted:slack_token>\"),\n-    (\"private_key\",   re.compile(r\"-----BEGIN [A-Z ]*PRIVATE KEY-----\"),        \"<redacted:private_key>\"),\n+    # whole PEM block, header to footer; a truncated block (no footer) is redacted to the end of the text\n+    (\"private_key\",   re.compile(r\"-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]*?-----END [A-Z ]*PRIVATE KEY-----\"), \"<redacted:private_key>\"),\n+    (\"private_key_truncated\", re.compile(r\"-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]*\"), \"<redacted:private_key>\"),\n     (\"jwt\",           re.compile(r\"eyJ[A-Za-z0-9_-]{10,}\\.eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}\"), \"<redacted:jwt>\"),\n     (\"bearer\",        re.compile(r\"(?i)\\bbearer\\s+[A-Za-z0-9._+/=\\-]{20,}\"),    \"Bearer <redacted:bearer>\"),\n     # key=value and \"key\": \"value\" forms where the key name contains a secret-ish word \u2014 including compound names\n",
+   "gold_lines": 4,
+   "FAIL_TO_PASS": [
+    "tests/test_redact.py::test_private_key_block_is_removed_entirely"
+   ],
+   "test_patch": "diff --git a/tests/test_redact.py b/tests/test_redact.py\nindex 0e79b15..a11aa82 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -53,6 +53,18 @@ def test_more_token_shapes():\n         assert tok not in out and hits[name] == 1, name\n \n \n+def test_private_key_block_is_removed_entirely():\n+    # markers assembled at runtime so this file itself never contains a PEM header for the pre-commit scan to flag\n+    dash, begin, end = \"-\" * 5, \"BEGIN RSA PRIVATE KEY\", \"END RSA PRIVATE KEY\"\n+    body = \"\\n\".join(\"MIIE\" + \"x\" * 60 for _ in range(5))\n+    pem = f\"{dash}{begin}{dash}\\n{body}\\n{dash}{end}{dash}\"\n+    out, hits = redact(f\"before\\n{pem}\\nafter\")\n+    assert hits[\"private_key\"] == 1 and \"MIIE\" not in out and out.endswith(\"after\") and out.startswith(\"before\")\n+    assert find(out) == []\n+    out2, hits2 = redact(f\"log line\\n{dash}BEGIN PRIVATE KEY{dash}\\n{body}\")     # truncated: no footer\n+    assert hits2[\"private_key_truncated\"] == 1 and \"MIIE\" not in out2\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_seeds.py b/tests/test_seeds.py\nindex c96efba..0587711 100644\n--- a/tests/test_seeds.py\n+++ b/tests/test_seeds.py\n@@ -49,5 +49,15 @@ def test_run_notes():\n     assert len({(r[\"series_label\"], r[\"run_index\"]) for r in data}) == len(data)\n \n \n+def test_request_overrides():\n+    cols, data = rows(\"coldstart_request_overrides.csv\")\n+    assert cols == [\"endpoint_id\", \"ts_utc\", \"gpu_label\", \"evidence\", \"note\", \"source\"]\n+    labels = {r[\"gpu_label\"] for _, r in [(None, x) for x in rows(\"gpu_labels.csv\")[1]]}\n+    for r in data:\n+        assert r[\"gpu_label\"] in labels, r            # an override must point at a known label\n+        assert r[\"evidence\"] == \"observed\", r          # overrides are only for placements someone saw\n+        assert r[\"ts_utc\"].endswith(\"+00:00\"), r\n+\n+\n def test_evidence_file_present():\n     assert (ROOT / \"evidence\" / \"gpu_per_cycle.txt\").is_file()\ndiff --git a/tests/test_snapshot_scenarios.py b/tests/test_snapshot_scenarios.py\nindex 61dc6e3..b500426 100644\n--- a/tests/test_snapshot_scenarios.py\n+++ b/tests/test_snapshot_scenarios.py\n@@ -56,8 +56,14 @@ class Pipeline:\n         return self.run(\"land\", \"--emberserve\", str(self.src / \"emberserve\"), \"--pulse\", str(self.src / \"pulse\"),\n                         \"--landing-dir\", self.env[\"LANDING_DIR\"])\n \n-    def bronze(self, label: str):\n-        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+    def bronze(self, label: str, *extra: str):\n+        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"], *extra)\n+\n+    def silver_fails(self) -> str:\n+        r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=self.env,\n+                           capture_output=True, text=True)\n+        assert r.returncode != 0, \"silver should have refused\"\n+        return r.stdout + r.stderr\n \n     def silver(self):\n         return self.run(\"silver\", \"--format\", \"parquet\")\n@@ -96,7 +102,9 @@ def test_revert_rename_and_empty_records_follow_the_manifest(pipe: Pipeline):\n     pipe.silver()\n     assert pipe.count(\"silver_coldstart_requests\") == 4                 # reverted file selected again, not \"newest\"\n \n-    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); out = pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    assert \"pruned 1 stale\" in out                                      # landing is a mirror: the old path is gone\n+    assert not (Path(pipe.env[\"LANDING_DIR\"]) / \"emberserve/results/serverless_coldstart_a.json\").exists()\n     assert pipe.count(\"silver_coldstart_requests\") == 4\n     assert pipe.count(\"silver_coldstart_requests\", source_file=\"emberserve/results/serverless_coldstart_a.json\") == 0\n \n@@ -118,6 +126,33 @@ def test_interrupted_run_repairs_the_ingest_log(pipe: Pipeline):\n \n def test_silver_refuses_when_bronze_lacks_the_current_version(pipe: Pipeline):\n     (pipe.results / \"serverless_coldstart_new.json\").write_text(coldstart(\"series_new\", 1)); pipe.land()\n-    r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=pipe.env,\n-                       capture_output=True, text=True)\n-    assert r.returncode != 0 and \"not in bronze\" in (r.stdout + r.stderr)\n+    assert \"not in bronze\" in pipe.silver_fails()\n+    pipe.bronze(\"r8\"); pipe.silver()\n+\n+\n+def test_partial_multi_table_ingest_is_refused_then_repaired(pipe: Pipeline):\n+    sw = pipe.results / \"runpod_serverless_s.json\"\n+    sw.write_text(sweep(True)); pipe.land(); pipe.bronze(\"r9\")\n+    shutil.rmtree(Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_sweep_records\")   # as if the run died mid-way\n+    shutil.rmtree(Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_ingest_log\")\n+    assert \"bronze_sweep_records\" in pipe.silver_fails()                # summary present, records missing \u2192 refuse\n+    out = pipe.bronze(\"r10\")                                            # per-table skip re-appends only the records\n+    assert \"bronze_sweep_records\" in out\n+    pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 2\n+\n+\n+def test_empty_file_is_a_complete_zero_row_ingest(pipe: Pipeline):\n+    (pipe.results / \"serverless_coldstart_empty_worker_log.txt\").write_text(\"\")\n+    pipe.land(); out = pipe.bronze(\"r11\")\n+    assert \"bronze_worker_log_lines\" in out                             # a zero-row append is still logged\n+    pipe.silver()                                                       # guard accepts it via the ledger\n+    assert pipe.count(\"silver_worker_log_events\") == 0\n+\n+\n+def test_force_reingest_does_not_duplicate_silver_events(pipe: Pipeline):\n+    before = pipe.count(\"silver_coldstart_requests\")\n+    out = pipe.bronze(\"r12\", \"--force\")\n+    assert \"bronze_coldstart_runs\" in out                               # appended again\n+    pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == before            # one ingest per (file, sha) selected\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_compound_key_names_and_base64_values",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator",
+    "tests/test_redact.py::test_more_token_shapes",
+    "tests/test_seeds.py::test_coldstart_series",
+    "tests/test_seeds.py::test_evidence_file_present",
+    "tests/test_seeds.py::test_gpu_labels",
+    "tests/test_seeds.py::test_run_notes"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  },
+  {
+   "task_id": "serverless-lakehouse__26ec77d-1",
+   "repo": "serverless-lakehouse",
+   "commit": "26ec77da902993e58d69226caa109bd5748b546a",
+   "base_commit": "896803f4b1225169af26ea7dd86fbd7543589c7d",
+   "commit_date": "2026-10-02",
+   "commit_subject": "Re-audit fixes: per-request GPU override, whole-PEM redaction, per-table snapshot guard",
+   "bundled": true,
+   "gold_hunks": [
+    11
+   ],
+   "gold_files": [
+    "seeds/coldstart_request_overrides.csv"
+   ],
+   "gold_patch": "diff --git a/seeds/coldstart_request_overrides.csv b/seeds/coldstart_request_overrides.csv\nnew file mode 100644\nindex 0000000..726402b\n--- /dev/null\n+++ b/seeds/coldstart_request_overrides.csv\n@@ -0,0 +1,4 @@\n+endpoint_id,ts_utc,gpu_label,evidence,note,source\n+4ib59mjp0vgaao,2026-09-23T19:53:07+00:00,48GB-A40-1.22,observed,\"run 7 (15:50 EDT): the worker that served this cold request was an A40 on the 48 GB tier; coldstart.py was launched with the stale --gpu 24GBPRO-1.10\",seeds/evidence/gpu_per_cycle.txt line \"run 7 (15:50) A40 ... 48 GB cold 177.5 s\"\n+4ib59mjp0vgaao,2026-09-23T19:53:09+00:00,48GB-A40-1.22,observed,\"run 7 warm request on the same A40 worker\",seeds/evidence/gpu_per_cycle.txt (run 7)\n+4ib59mjp0vgaao,2026-09-23T19:53:11+00:00,48GB-A40-1.22,observed,\"run 7 warm request on the same A40 worker\",seeds/evidence/gpu_per_cycle.txt (run 7)\n",
+   "gold_lines": 4,
+   "FAIL_TO_PASS": [
+    "tests/test_seeds.py::test_request_overrides"
+   ],
+   "test_patch": "diff --git a/tests/test_redact.py b/tests/test_redact.py\nindex 0e79b15..a11aa82 100644\n--- a/tests/test_redact.py\n+++ b/tests/test_redact.py\n@@ -53,6 +53,18 @@ def test_more_token_shapes():\n         assert tok not in out and hits[name] == 1, name\n \n \n+def test_private_key_block_is_removed_entirely():\n+    # markers assembled at runtime so this file itself never contains a PEM header for the pre-commit scan to flag\n+    dash, begin, end = \"-\" * 5, \"BEGIN RSA PRIVATE KEY\", \"END RSA PRIVATE KEY\"\n+    body = \"\\n\".join(\"MIIE\" + \"x\" * 60 for _ in range(5))\n+    pem = f\"{dash}{begin}{dash}\\n{body}\\n{dash}{end}{dash}\"\n+    out, hits = redact(f\"before\\n{pem}\\nafter\")\n+    assert hits[\"private_key\"] == 1 and \"MIIE\" not in out and out.endswith(\"after\") and out.startswith(\"before\")\n+    assert find(out) == []\n+    out2, hits2 = redact(f\"log line\\n{dash}BEGIN PRIVATE KEY{dash}\\n{body}\")     # truncated: no footer\n+    assert hits2[\"private_key_truncated\"] == 1 and \"MIIE\" not in out2\n+\n+\n def test_find_masks_the_match():\n     hits = find(f\"token={HF}\")\n     assert {name for name, _ in hits} == {\"hf_token\", \"kv_secret\"}   # both patterns see it; neither leaks it\ndiff --git a/tests/test_seeds.py b/tests/test_seeds.py\nindex c96efba..0587711 100644\n--- a/tests/test_seeds.py\n+++ b/tests/test_seeds.py\n@@ -49,5 +49,15 @@ def test_run_notes():\n     assert len({(r[\"series_label\"], r[\"run_index\"]) for r in data}) == len(data)\n \n \n+def test_request_overrides():\n+    cols, data = rows(\"coldstart_request_overrides.csv\")\n+    assert cols == [\"endpoint_id\", \"ts_utc\", \"gpu_label\", \"evidence\", \"note\", \"source\"]\n+    labels = {r[\"gpu_label\"] for _, r in [(None, x) for x in rows(\"gpu_labels.csv\")[1]]}\n+    for r in data:\n+        assert r[\"gpu_label\"] in labels, r            # an override must point at a known label\n+        assert r[\"evidence\"] == \"observed\", r          # overrides are only for placements someone saw\n+        assert r[\"ts_utc\"].endswith(\"+00:00\"), r\n+\n+\n def test_evidence_file_present():\n     assert (ROOT / \"evidence\" / \"gpu_per_cycle.txt\").is_file()\ndiff --git a/tests/test_snapshot_scenarios.py b/tests/test_snapshot_scenarios.py\nindex 61dc6e3..b500426 100644\n--- a/tests/test_snapshot_scenarios.py\n+++ b/tests/test_snapshot_scenarios.py\n@@ -56,8 +56,14 @@ class Pipeline:\n         return self.run(\"land\", \"--emberserve\", str(self.src / \"emberserve\"), \"--pulse\", str(self.src / \"pulse\"),\n                         \"--landing-dir\", self.env[\"LANDING_DIR\"])\n \n-    def bronze(self, label: str):\n-        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"])\n+    def bronze(self, label: str, *extra: str):\n+        return self.run(\"bronze\", \"--run-label\", label, \"--format\", \"parquet\", \"--landing-dir\", self.env[\"LANDING_DIR\"], *extra)\n+\n+    def silver_fails(self) -> str:\n+        r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=self.env,\n+                           capture_output=True, text=True)\n+        assert r.returncode != 0, \"silver should have refused\"\n+        return r.stdout + r.stderr\n \n     def silver(self):\n         return self.run(\"silver\", \"--format\", \"parquet\")\n@@ -96,7 +102,9 @@ def test_revert_rename_and_empty_records_follow_the_manifest(pipe: Pipeline):\n     pipe.silver()\n     assert pipe.count(\"silver_coldstart_requests\") == 4                 # reverted file selected again, not \"newest\"\n \n-    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    f.rename(pipe.results / \"serverless_coldstart_renamed.json\"); out = pipe.land(); pipe.bronze(\"r4\"); pipe.silver()\n+    assert \"pruned 1 stale\" in out                                      # landing is a mirror: the old path is gone\n+    assert not (Path(pipe.env[\"LANDING_DIR\"]) / \"emberserve/results/serverless_coldstart_a.json\").exists()\n     assert pipe.count(\"silver_coldstart_requests\") == 4\n     assert pipe.count(\"silver_coldstart_requests\", source_file=\"emberserve/results/serverless_coldstart_a.json\") == 0\n \n@@ -118,6 +126,33 @@ def test_interrupted_run_repairs_the_ingest_log(pipe: Pipeline):\n \n def test_silver_refuses_when_bronze_lacks_the_current_version(pipe: Pipeline):\n     (pipe.results / \"serverless_coldstart_new.json\").write_text(coldstart(\"series_new\", 1)); pipe.land()\n-    r = subprocess.run([sys.executable, \"-m\", \"lakehouse.silver\", \"--format\", \"parquet\"], cwd=ROOT, env=pipe.env,\n-                       capture_output=True, text=True)\n-    assert r.returncode != 0 and \"not in bronze\" in (r.stdout + r.stderr)\n+    assert \"not in bronze\" in pipe.silver_fails()\n+    pipe.bronze(\"r8\"); pipe.silver()\n+\n+\n+def test_partial_multi_table_ingest_is_refused_then_repaired(pipe: Pipeline):\n+    sw = pipe.results / \"runpod_serverless_s.json\"\n+    sw.write_text(sweep(True)); pipe.land(); pipe.bronze(\"r9\")\n+    shutil.rmtree(Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_sweep_records\")   # as if the run died mid-way\n+    shutil.rmtree(Path(pipe.env[\"LAKEHOUSE_DIR\"]) / \"bronze\" / \"bronze_ingest_log\")\n+    assert \"bronze_sweep_records\" in pipe.silver_fails()                # summary present, records missing \u2192 refuse\n+    out = pipe.bronze(\"r10\")                                            # per-table skip re-appends only the records\n+    assert \"bronze_sweep_records\" in out\n+    pipe.silver()\n+    assert pipe.count(\"silver_sweep_requests\") == 2\n+\n+\n+def test_empty_file_is_a_complete_zero_row_ingest(pipe: Pipeline):\n+    (pipe.results / \"serverless_coldstart_empty_worker_log.txt\").write_text(\"\")\n+    pipe.land(); out = pipe.bronze(\"r11\")\n+    assert \"bronze_worker_log_lines\" in out                             # a zero-row append is still logged\n+    pipe.silver()                                                       # guard accepts it via the ledger\n+    assert pipe.count(\"silver_worker_log_events\") == 0\n+\n+\n+def test_force_reingest_does_not_duplicate_silver_events(pipe: Pipeline):\n+    before = pipe.count(\"silver_coldstart_requests\")\n+    out = pipe.bronze(\"r12\", \"--force\")\n+    assert \"bronze_coldstart_runs\" in out                               # appended again\n+    pipe.silver()\n+    assert pipe.count(\"silver_coldstart_requests\") == before            # one ingest per (file, sha) selected\n",
+   "validation": {
+    "base_fails": "3/3",
+    "gold_passes": "3/3",
+    "valid": true
+   },
+   "PASS_TO_PASS": [
+    "tests/test_landing.py::test_every_dataset_has_a_reader",
+    "tests/test_landing.py::test_every_landed_file_is_in_the_manifest",
+    "tests/test_landing.py::test_every_manifest_entry_matches_its_file",
+    "tests/test_landing.py::test_forbidden_patterns_cover_env_files",
+    "tests/test_landing.py::test_no_forbidden_names_and_no_secrets",
+    "tests/test_redact.py::test_already_redacted_and_benign_text_untouched",
+    "tests/test_redact.py::test_compound_key_names_and_base64_values",
+    "tests/test_redact.py::test_find_masks_the_match",
+    "tests/test_redact.py::test_known_token_shapes_are_replaced",
+    "tests/test_redact.py::test_kv_secret_keeps_key_and_separator",
+    "tests/test_redact.py::test_more_token_shapes",
+    "tests/test_seeds.py::test_coldstart_series",
+    "tests/test_seeds.py::test_evidence_file_present",
+    "tests/test_seeds.py::test_gpu_labels",
+    "tests/test_seeds.py::test_run_notes"
+   ],
+   "broken_by_gold": [],
+   "unstable_at_base": []
+  }
+ ]
+}

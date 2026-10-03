@@ -1,0 +1,48 @@
+{
+ "repo": "emberserve",
+ "commit": "404bcd26d713168cb00cd552a36e95c15fc98ec2",
+ "base_commit": "0987fda267b1922fe072116cf21c4301f30cbe64",
+ "subject": "Per-token CPU cost: incremental detokenizer decodes a sliding window (O(1) tokens/step, was O(output length)); SSE path drops the per-token is_disconnected() poll (sse-starlette already cancels on disconnect) and uses orjson when present; hf-marked detokenizer-vs-full-decode test",
+ "date": "2026-09-27",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "pagedserve/server/app.py",
+   "lines": 9
+  },
+  {
+   "i": 1,
+   "path": "pagedserve/server/app.py",
+   "lines": 13
+  },
+  {
+   "i": 2,
+   "path": "pagedserve/tokenizer.py",
+   "lines": 2
+  },
+  {
+   "i": 3,
+   "path": "pagedserve/tokenizer.py",
+   "lines": 8
+  },
+  {
+   "i": 4,
+   "path": "pagedserve/tokenizer.py",
+   "lines": 11
+  },
+  {
+   "i": 5,
+   "path": "pagedserve/tokenizer.py",
+   "lines": 45
+  },
+  {
+   "i": 6,
+   "path": "pyproject.toml",
+   "lines": 2
+  }
+ ],
+ "new_tests": [],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": []
+}

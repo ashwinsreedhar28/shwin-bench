@@ -1,0 +1,23 @@
+{
+ "repo": "emberserve",
+ "commit": "56ca603fea779702f81af9ace397d6f1be210696",
+ "base_commit": "444ec43a5871cef3e8c1f2e457ccd0176962b96d",
+ "subject": "engine: explicit activation reserve when sizing the KV cache (1 GiB + prefill-chunk MLP + largest-batch logits); 512 hand-set blocks OOMed the 7B on a 4090 at graph capture",
+ "date": "2026-09-28",
+ "code_hunks": [
+  {
+   "i": 0,
+   "path": "pagedserve/engine.py",
+   "lines": 25
+  },
+  {
+   "i": 1,
+   "path": "pagedserve/engine.py",
+   "lines": 3
+  }
+ ],
+ "new_tests": [],
+ "dropped_not_failing": [],
+ "dropped_not_passing": [],
+ "tasks": []
+}
