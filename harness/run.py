@@ -37,17 +37,19 @@ def run_one(task, a, run_dir):
     try:
         info = agent.run(statement, instance_id=task["instance_id"], repo=task["repo_name"], workdir=WORKDIR[task["repo_name"]])
     except Exception as e:
-        info = {"exit_status": f"Error: {type(e).__name__}", "submission": "", "error": traceback.format_exc()[-2000:]}
+        info = {"exit_status": f"Error: {type(e).__name__}", "submission": "", "error": traceback.format_exc()[-4000:]}
+        (tdir / "error.txt").write_text(info["error"])
+        print(f"{task['instance_id']}: agent error {type(e).__name__}: {str(e)[:300]}  (full trace in {tdir / 'error.txt'})", flush=True)
     finally:
         try: env.cleanup()
         except Exception: pass
     patch = info.get("submission") or ""
     (tdir / "patch.diff").write_text(patch)
-    cost = float(getattr(model, "cost", 0.0) or 0.0); SPENT += cost
+    cost = float(getattr(agent, "cost", 0.0) or 0.0); SPENT += cost
     g = grade(task, patch) if patch.strip() else dict(status="NO_PATCH", resolved=False, f2p_passed="0/%d" % len(task["FAIL_TO_PASS"]), p2p_broken=[], p2p_broken_count=0, tests_seen=0, log_tail="")
     rec = dict(instance_id=task["instance_id"], split=task["split"], repo=task["repo_name"], statement=a.statement, model=a.model,
                category=task["meta"]["category"], difficulty=task["meta"]["difficulty"], interface_leak=task["meta"]["interface_leak"],
-               exit_status=info.get("exit_status"), steps=getattr(model, "n_calls", None), cost_usd=round(cost, 4),
+               exit_status=info.get("exit_status"), steps=getattr(agent, "n_calls", None), cost_usd=round(cost, 4),
                agent_seconds=round(time.time() - t0), **{k: v for k, v in g.items() if k != "log_tail"})
     (tdir / "grade.json").write_text(json.dumps(g, indent=1))
     with (run_dir / "results.jsonl").open("a") as f: f.write(json.dumps(rec) + "\n")
@@ -68,6 +70,9 @@ def main():
     ap.add_argument("--cpus", default="2"); ap.add_argument("--memory", default="4g")
     ap.add_argument("--run-name")
     a = ap.parse_args()
+    import os
+    if a.model.startswith("anthropic/") and not os.environ.get("ANTHROPIC_API_KEY"):
+        sys.exit("ANTHROPIC_API_KEY is not set in this shell (export it, or put it in ~/Library/Application Support/mini-swe-agent/.env)")
     tasks = load_tasks(a.split, a.ids, a.repo)
     if a.difficulty: tasks = [t for t in tasks if t["meta"]["difficulty"] == a.difficulty]
     if a.statement == "vague": tasks = [t for t in tasks if not t["meta"]["interface_leak"]]
