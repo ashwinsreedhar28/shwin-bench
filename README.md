@@ -76,4 +76,4 @@ bugs (the most interesting ones) are out by the CPU rule.
 ## Status
 
 Dataset validated. Harness (mini-swe-agent + Docker, `--network none`) and model runs: in progress,
-see `harness/`.
+see `harness/README.md` (`make setup see `harness/`.see `harness/`. make images-pilot see `harness/`.see `harness/`. make pilot`).

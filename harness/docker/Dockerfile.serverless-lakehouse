@@ -1,0 +1,8 @@
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends git openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir pyspark==3.5.9 delta-spark==3.3.3 pytest==8.4.1 pyarrow==25.0.1 pytest-timeout
+ARG BASE_COMMIT
+RUN git clone https://github.com/ashwinsreedhar28/serverless-lakehouse /testbed && cd /testbed && git checkout -q ${BASE_COMMIT} \
+ && git config user.email agent@shwin && git config user.name agent
+WORKDIR /testbed
+ENV PYTEST_ADDOPTS='-m "not slow"' PYTHONDONTWRITEBYTECODE=1

@@ -1,0 +1,10 @@
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir pytest pytest-timeout numpy aiohttp requests pillow mss opencv-python-headless google-genai
+# pyaudio needs portaudio and is only imported, never used, by the tests: stub it
+RUN mkdir -p /opt/stubs && printf 'class PyAudio:\n    def __init__(self, *a, **k): pass\npaInt16 = 8\n' > /opt/stubs/pyaudio.py
+ARG BASE_COMMIT
+RUN git clone https://github.com/ashwinsreedhar28/aether /testbed && cd /testbed && git checkout -q ${BASE_COMMIT} \
+ && git config user.email agent@shwin && git config user.name agent
+WORKDIR /testbed/daemons/raven-core
+ENV PYTHONPATH=/testbed/daemons/raven-core:/opt/stubs PYTHONDONTWRITEBYTECODE=1
