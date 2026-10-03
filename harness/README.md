@@ -56,3 +56,10 @@ Model names are litellm names; any provider litellm supports works the same way 
 SWE-bench Verified `<15 min fix` instances run through the same `run.py` once an adapter maps a Verified
 row to this task format and its `image_name` to the official `swebench/sweb.eval.x86_64.<id>` image.
 Not written yet; see the day-1 report for the candidate list and the memorization probe.
+
+## Grader gotchas found by the first pilot
+
+- `triton` is not a dependency of the arm64 torch CPU wheel; without it every Triton-kernel test file (the CPU interpreter path) is skipped and shows up as 76-93 "broken" PASS_TO_PASS tests. The image installs `triton>=3.8` explicitly (aarch64 wheels exist).
+- `HF_HUB_OFFLINE=1` in the image breaks tests that mock the Hub download path; `--network none` already enforces offline, so the variable is gone.
+- One test file segfaults the interpreter under the Triton CPU interpreter; the grader runs each test file touched by the hidden test patch in its own pytest process, like the validation did.
+- `tests_seen` in `grade.json` should be close to the suite size (~400 for emberserve); if it is not, the run died or skipped, and `failed_seen` + `grade_log.txt` say why.
